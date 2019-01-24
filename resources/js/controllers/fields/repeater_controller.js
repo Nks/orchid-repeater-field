@@ -4,6 +4,8 @@ import dragula from "dragula";
 
 let sqrl = require('squirrelly');
 
+let $ = global.$;
+
 export default class extends Controller {
     /**
      * @type {string[]}
@@ -17,14 +19,13 @@ export default class extends Controller {
     template;
 
     connect() {
+        //We not needed work with this on preview
+        if (document.documentElement.hasAttribute("data-turbolinks-preview")) {
+            return;
+        }
+
         sqrl.autoEscaping(false);
         this.template = sqrl.Compile(this.templateTarget.innerHTML);
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content'),
-            },
-        });
-
         this.fetchFields();
         this.initDragDrop();
     }
@@ -33,7 +34,8 @@ export default class extends Controller {
      * Retrieving fields from the backend if they are exists
      */
     fetchFields() {
-        let field_name = this.data.get('name'),
+        let self = this,
+            field_name = this.data.get('name'),
             value = JSON.parse(this.data.get('value'));
 
         axios.post(this.data.get('url'), {
@@ -42,7 +44,7 @@ export default class extends Controller {
         }).then((r) => {
             r.data.results.forEach((v, k) => {
                 let content = v.join('', v);
-                this.repeaterContainerTarget.insertAdjacentHTML('beforeend', this.template({
+                this.repeaterContainerTarget.insertAdjacentHTML('beforeend', self.template({
                     content: content,
                     block_key: k,
                     block_count: k + 1
@@ -147,7 +149,11 @@ export default class extends Controller {
                 v.innerHTML = k + 1;
             })
         }
+    }
 
+    disconnect() {
+        this.repeaterContainerTarget.innerHTML = '';
+        this.template = null;
     }
 
 }
