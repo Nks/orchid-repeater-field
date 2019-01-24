@@ -35,7 +35,7 @@ abstract class RepeaterHandler extends Widget
     abstract function fields(): array;
 
     /**
-     * Return fields
+     * Return rendered fields
      *
      * @return array
      * @throws \Throwable
@@ -43,9 +43,10 @@ abstract class RepeaterHandler extends Widget
     public final function handler()
     {
         $values = request('value', []);
+        $blocksCount = (int)request('blocks', 0);
 
         if (!$values) {
-            return [$this->renderFields()];
+            return [$this->renderFields($blocksCount)];
         }
 
         $result = [];
@@ -58,12 +59,16 @@ abstract class RepeaterHandler extends Widget
     }
 
     /**
-     * @param int $list
+     * Preparing fields and modifying their by names
+     *
+     * TODO Add support of multiple values (select[])
+     *
+     * @param int $blockKey
      * @param array $values
      * @return array
      * @throws \Throwable
      */
-    private function renderFields(int $list = 0, $values = [])
+    private function renderFields(int $blockKey = 0, $values = [])
     {
         $fields = [];
         foreach ($this->fields() as $field) {
@@ -73,9 +78,12 @@ abstract class RepeaterHandler extends Widget
                     $field->modifyValue($values[$oldName]);
                 }
 
-                $fieldName = $this->repeaterName . '[' . $list . '][' . $oldName . ']';
+                $fieldName = $this->repeaterName . '[' . $blockKey . '][' . $oldName . ']';
 
                 $field->modifyName($fieldName);
+                //Using this for reorder
+                $field->attributes['data-repeater-name-key'] = $oldName;
+                $field->inlineAttributes[] = 'data-repeater-name-key';
                 $fields[] = $field->render()->render();
             }
         }

@@ -14,4 +14,22 @@
     }
   }
 
+  .add_block {
+    margin-top: 1rem;
+    display: block;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .125);
+    font-size: 20px;
+    height: 11px;
+    cursor: pointer;
+
+    &:before {
+      background-color: $white;
+    }
+
+    &.disabled {
+      opacity: .3;
+    }
+  }
 }

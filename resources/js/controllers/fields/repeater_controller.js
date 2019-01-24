@@ -1,6 +1,7 @@
 import {Controller} from "stimulus"
 
 import dragula from "dragula";
+
 let sqrl = require('squirrelly');
 
 export default class extends Controller {
@@ -8,21 +9,25 @@ export default class extends Controller {
      * @type {string[]}
      */
     static targets = [
-        "template"
+        "template",
+        "repeaterContainer"
     ];
+
+    template;
 
     connect() {
         sqrl.autoEscaping(false);
+        this.template = sqrl.Compile(this.templateTarget.innerHTML);
+
         this.fetchFields();
-        this.initActions();
+        this.initDragDrop();
     }
 
+    /**
+     * Retrieving fields from the backend if they are exists
+     */
     fetchFields() {
         let field_name = this.data.get('name'),
-            container_id = this.data.get('id'),
-            container = this.element.querySelector(`#${container_id}`),
-            elements_count = this.data.get('count'),
-            template = sqrl.Compile(this.templateTarget.innerHTML),
             value = JSON.parse(this.data.get('value'));
 
         $.ajaxSetup({
@@ -36,38 +41,90 @@ export default class extends Controller {
             repeater_name: field_name
         }).then((r) => {
             r.data.results.forEach((v, k) => {
-                container.innerHTML += template({content: v});
+                this.repeaterContainerTarget.innerHTML += this.template({
+                    content: v,
+                    block_key: k
+                });
             });
         });
     }
 
-    initActions() {
-        let container_id = this.data.get('id'),
-            container = this.element.querySelector(`#${container_id}`);
+    /**
+     * Initialize drag n' drop ability
+     */
+    initDragDrop() {
+        let self = this;
 
-        $('.card-hcopy').on('click', function () {
-            let tekparent = $(this).parents('.repeater-item'),
-                count = $(container).children('.repeater-item').length,
-                $clone = tekparent.clone(true);
-
-            $clone.find("input, textarea").each(function (index, element) {
-                let tekname = $(element).attr('name');
-                tekname = tekname.replace("[" + tekid + "]", "[" + count + "]");
-                $(element).attr('name', tekname);
-            });
-            $clone.appendTo(container);
-        });
-
-        $('.card-hdelete').on('click', function () {
-            $(this).parents('.repeater-item').remove();
-        });
-
-
-        dragula([container], {
+        dragula([this.repeaterContainerTarget], {
             moves: function (el, container, handle) {
                 return handle.classList.contains('card-handle');
             }
+        }).on('drop', function () {
+            self.sort();
         });
+    }
+
+    /**
+     * Adding new blocks based on number of blocks which we have right now
+     */
+    addBlock() {
+        const blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
+
+        axios.post(this.data.get('url'), {
+            repeater_name: this.data.get('name'),
+            blocks: blocksCount
+        }).then((r) => {
+            let key = blocksCount;
+            r.data.results.forEach((v, k) => {
+                this.repeaterContainerTarget.innerHTML += this.template({
+                    content: v,
+                    block_key: key
+                });
+
+                key++;
+            });
+
+            this.sort();
+        });
+    }
+
+    /**
+     * Delete specified block based on event
+     *
+     * @param event
+     */
+    deleteBlock(event) {
+        $(event.currentTarget).parents('.repeater-item').remove();
+    }
+
+    /**
+     * Sorting nested fields
+     *
+     * TODO: Do we need create a labels for this based on new order?
+     */
+    sort() {
+        let repeater_field_name = this.data.get('name'),
+            blocks = this.repeaterContainerTarget.querySelectorAll('.repeater-item');
+
+        blocks.forEach((block, currentKey) => {
+            block.dataset.sort = currentKey;
+            const fields = block.querySelectorAll('[data-repeater-name-key]');
+
+            if (!fields.length) {
+                return;
+            }
+
+            fields.forEach((field) => {
+                let originalName = '[' + field.dataset.repeaterNameKey + ']';
+
+                if (originalName.indexOf('[]')) {
+                    originalName.replace('[]', '');
+                }
+
+                field.setAttribute('name', repeater_field_name + '[' + currentKey + ']' + originalName);
+            })
+        })
+
     }
 
 }
