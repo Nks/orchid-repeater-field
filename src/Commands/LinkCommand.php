@@ -29,6 +29,8 @@ class LinkCommand extends Command
      */
     public function handle()
     {
+        $this->updateGitIgnore();
+
         if (file_exists(public_path('orchid_repeater'))) {
             $this->error('The "public/orchid_repeater" directory already exists.');
 
@@ -39,5 +41,24 @@ class LinkCommand extends Command
             public_path('orchid_repeater'));
 
         $this->info('The [public/orchid_repeater] directory has been linked.');
+    }
+
+    /**
+     * Adding orchid_repeater to .gitignore
+     */
+    private function updateGitIgnore(): void
+    {
+        if (!file_exists(app_path('../.gitignore'))) {
+            $this->warn('Unable to locate ".gitignore".  Did you move this file?');
+            $this->warn('A semantic link to public files was not added to the ignore list');
+
+            return;
+        }
+
+        $str = file_get_contents(app_path('../.gitignore'));
+
+        if ($str !== false && strpos($str, '/public/orchid_repeater') === false) {
+            file_put_contents(app_path('../.gitignore'), $str . PHP_EOL . '/public/orchid_repeater' . PHP_EOL);
+        }
     }
 }

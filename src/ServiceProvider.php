@@ -1,20 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nakukryskin\OrchidRepeaterField;
 
 use Config;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
+use Orchid\Platform\Dashboard;
 
 class ServiceProvider extends BaseServiceProvider
 {
     /**
+     * @var Dashboard
+     */
+    protected $dashboard;
+
+    /**
      * Perform post-registration booting of services.
      *
+     * @param Dashboard $dashboard
      * @return void
+     * @throws \Exception
      */
-    public function boot()
+    public function boot(Dashboard $dashboard)
     {
+        $this->dashboard = $dashboard;
+
+        $this->registerResources($this->getResources());
+
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'platform');
 
         // Publishing is only necessary when using the CLI.
@@ -33,8 +47,6 @@ class ServiceProvider extends BaseServiceProvider
         if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
             define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__ . '/../'));
         }
-
-        $this->registerAssets();
 
         // Register the service the package provides.
         $this->app->singleton('repeater-field', function ($app) {
@@ -81,17 +93,43 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
+     * Registering resources
+     *
+     * TODO: https://github.com/Nks/orchid-repeater-field/issues/1
+     *
+     * @param array $resources
+     * @throws \Exception
+     */
+    private function registerResources(array $resources): void
+    {
+        if (array_has($resources, 'scripts')) {
+            Config::set('platform.resource.scripts',
+                array_merge(config('platform.resource.scripts', []), $resources['scripts']));
+        }
+
+        if (array_has($resources, 'stylesheets')) {
+            Config::set('platform.resource.stylesheets',
+                array_merge(config('platform.resource.stylesheets', []), $resources['stylesheets']));
+        }
+    }
+
+    /**
      * Adding styles and js to the platform
      * @throws \Exception
      */
-    private function registerAssets(): void
+    private function getResources(): array
     {
-        Config::set('platform.resource.scripts', array_merge(config('platform.resource.scripts', []), [
-            mix('/js/repeater.js', 'orchid_repeater')
-        ]));
+        if (!file_exists(public_path('orchid_repeater'))) {
+            return [];
+        }
 
-        Config::set('platform.resource.stylesheets', array_merge(config('platform.resource.stylesheets', []), [
-            mix('css/repeater.css', 'orchid_repeater')
-        ]));
+        return [
+            'scripts' => [
+                mix('/js/repeater.js', 'orchid_repeater')
+            ],
+            'stylesheets' => [
+                mix('css/repeater.css', 'orchid_repeater')
+            ]
+        ];
     }
 }
