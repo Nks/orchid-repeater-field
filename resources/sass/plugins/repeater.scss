@@ -1,5 +1,10 @@
 .repeater {
   .card {
+    margin-top: 1rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
     > .card-header {
       .actions {
         span {

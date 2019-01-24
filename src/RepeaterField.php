@@ -17,6 +17,7 @@ use Orchid\Screen\Field;
  * @method $this required($value = true)
  * @method $this help(string $value = null)
  * @method $this name($value = true)
+ * @method $this handler($value = true)
  */
 class RepeaterField extends Field
 {
@@ -28,13 +29,23 @@ class RepeaterField extends Field
     public $view = 'platform::fields.repeater';
 
     /**
+     * Required Attributes.
+     *
+     * @var array
+     */
+    public $required = [
+        'name',
+        'handler',
+    ];
+
+    /**
      * Default attributes value.
      *
      * @var array
      */
     public $attributes = [
         'class' => 'form-control',
-        'fields' => []
+        'original_name' => null
     ];
 
     /**
@@ -50,36 +61,14 @@ class RepeaterField extends Field
     ];
 
 
-    public $fields;
-
-    /**
-     * Set the fields array
-     *
-     * @param array $fields
-     * @return RepeaterField
-     * @throws \Throwable
-     */
-    public function fields(array $fields): self
-    {
-        foreach ($fields as $field) {
-            if ($field instanceof Field) {
-                $this->attributes['fields'][] = $field->render();
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * Creating an instance of the repeater field
      *
      * @param string $name
-     * @param array $fields
      * @return RepeaterField
-     * @throws \Throwable
      */
-    public static function make(string $name, array $fields): self
+    public static function make(string $name): self
     {
-        return (new static)->name($name)->fields($fields);
+        return (new static)->name($name)->set('original_name', $name);
     }
 }

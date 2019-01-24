@@ -3,7 +3,7 @@ let mix = require('laravel-mix');
 let webpackConfig = {
     resolve: {
         alias: {
-            'orchid': path.resolve(__dirname, 'vendor/orchid'),
+            'orchid': path.resolve(`${__dirname}/../../../`, 'vendor/orchid'),
         },
     },
 };

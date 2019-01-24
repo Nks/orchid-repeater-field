@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField;
 
-use Config;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
 use Orchid\Platform\Dashboard;
@@ -27,7 +26,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->dashboard = $dashboard;
 
-        $this->registerResources($this->getResources());
+        $this->registerResources();
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'platform');
 
@@ -95,41 +94,17 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Registering resources
      *
-     * TODO: https://github.com/Nks/orchid-repeater-field/issues/1
-     *
-     * @param array $resources
      * @throws \Exception
      */
-    private function registerResources(array $resources): void
-    {
-        if (array_has($resources, 'scripts')) {
-            Config::set('platform.resource.scripts',
-                array_merge(config('platform.resource.scripts', []), $resources['scripts']));
-        }
-
-        if (array_has($resources, 'stylesheets')) {
-            Config::set('platform.resource.stylesheets',
-                array_merge(config('platform.resource.stylesheets', []), $resources['stylesheets']));
-        }
-    }
-
-    /**
-     * Adding styles and js to the platform
-     * @throws \Exception
-     */
-    private function getResources(): array
+    private function registerResources(): void
     {
         if (!file_exists(public_path('orchid_repeater'))) {
-            return [];
+            return;
         }
 
-        return [
-            'scripts' => [
-                mix('/js/repeater.js', 'orchid_repeater')
-            ],
-            'stylesheets' => [
-                mix('css/repeater.css', 'orchid_repeater')
-            ]
-        ];
+        $this->dashboard->registerResource('scripts', mix('/js/repeater.js', 'orchid_repeater'));
+        $this->dashboard->registerResource('stylesheets', mix('css/repeater.css', 'orchid_repeater'));
+
+
     }
 }
