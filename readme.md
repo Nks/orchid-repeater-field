@@ -1,6 +1,5 @@
 WIP
 
-# Webpack usage
+# Orchid Platform Repeater Field
 
-1. Copy webpack.config.json_example to webpack.config.json
-1. Resolve `orchid_path` to the vendor package
+Adding support of repeater field to Orchid platform (https://github.com/orchidsoftware/platform)
