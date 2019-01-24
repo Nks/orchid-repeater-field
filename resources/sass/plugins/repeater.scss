@@ -8,7 +8,13 @@
     > .card-header {
       .actions {
         span {
-          cursor: pointer;
+          &.action {
+            cursor: pointer;
+          }
+
+          &.badge {
+            opacity: 0.3;
+          }
         }
       }
     }
