@@ -69,6 +69,6 @@ class RepeaterField extends Field
      */
     public static function make(string $name): self
     {
-        return (new static)->name($name)->set('original_name', $name);
+        return (new static)->name($name)->set('original_name', $name)->value([]);
     }
 }

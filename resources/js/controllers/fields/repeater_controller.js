@@ -10,7 +10,8 @@ export default class extends Controller {
      */
     static targets = [
         "template",
-        "repeaterContainer"
+        "repeaterContainer",
+        "repeaterBlockCount"
     ];
 
     template;
@@ -41,10 +42,11 @@ export default class extends Controller {
             repeater_name: field_name
         }).then((r) => {
             r.data.results.forEach((v, k) => {
-                this.repeaterContainerTarget.innerHTML += this.template({
+                this.repeaterContainerTarget.insertAdjacentHTML('beforeend', this.template({
                     content: v,
-                    block_key: k
-                });
+                    block_key: k,
+                    block_count: k + 1
+                }));
             });
         });
     }
@@ -68,7 +70,9 @@ export default class extends Controller {
      * Adding new blocks based on number of blocks which we have right now
      */
     addBlock() {
-        const blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
+        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
+
+        console.log(blocksCount);
 
         axios.post(this.data.get('url'), {
             repeater_name: this.data.get('name'),
@@ -76,15 +80,14 @@ export default class extends Controller {
         }).then((r) => {
             let key = blocksCount;
             r.data.results.forEach((v, k) => {
-                this.repeaterContainerTarget.innerHTML += this.template({
+                this.repeaterContainerTarget.insertAdjacentHTML('beforeend', this.template({
                     content: v,
-                    block_key: key
-                });
+                    block_key: key,
+                    block_count: key + 1
+                }));
 
                 key++;
             });
-
-            this.sort();
         });
     }
 
@@ -123,7 +126,14 @@ export default class extends Controller {
 
                 field.setAttribute('name', repeater_field_name + '[' + currentKey + ']' + originalName);
             })
-        })
+        });
+
+        if (this.hasRepeaterBlockCountTarget) {
+            console.log('lol');
+            this.repeaterBlockCountTargets.forEach((v, k) => {
+                v.innerHTML = k + 1;
+            })
+        }
 
     }
 

@@ -42,10 +42,15 @@ abstract class RepeaterHandler extends Widget
      */
     public final function handler()
     {
-        $values = request('value', []);
+        $values = null;
+
+        if (request()->has('value')) {
+            $values = request('value', null);
+        }
+
         $blocksCount = (int)request('blocks', 0);
 
-        if (!$values) {
+        if (is_null($values)) {
             return [$this->renderFields($blocksCount)];
         }
 
