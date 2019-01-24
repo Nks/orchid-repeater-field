@@ -19,6 +19,11 @@ export default class extends Controller {
     connect() {
         sqrl.autoEscaping(false);
         this.template = sqrl.Compile(this.templateTarget.innerHTML);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content'),
+            },
+        });
 
         this.fetchFields();
         this.initDragDrop();
@@ -31,23 +36,20 @@ export default class extends Controller {
         let field_name = this.data.get('name'),
             value = JSON.parse(this.data.get('value'));
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content'),
-            },
-        });
-
         axios.post(this.data.get('url'), {
             value: value,
             repeater_name: field_name
         }).then((r) => {
             r.data.results.forEach((v, k) => {
+                let content = v.join('', v);
                 this.repeaterContainerTarget.insertAdjacentHTML('beforeend', this.template({
-                    content: v,
+                    content: content,
                     block_key: k,
                     block_count: k + 1
                 }));
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
     }
 
@@ -69,10 +71,9 @@ export default class extends Controller {
     /**
      * Adding new blocks based on number of blocks which we have right now
      */
-    addBlock() {
-        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
-
-        console.log(blocksCount);
+    addBlock(event) {
+        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length,
+            currentBlock = event.currentTarget.closest('.repeater-item');
 
         axios.post(this.data.get('url'), {
             repeater_name: this.data.get('name'),
@@ -80,14 +81,25 @@ export default class extends Controller {
         }).then((r) => {
             let key = blocksCount;
             r.data.results.forEach((v, k) => {
-                this.repeaterContainerTarget.insertAdjacentHTML('beforeend', this.template({
-                    content: v,
-                    block_key: key,
-                    block_count: key + 1
-                }));
+                let content = v.join('', v),
+                    compiledTemplate = this.template({
+                        content: content,
+                        block_key: key,
+                        block_count: key + 1
+                    });
+
+                if (currentBlock !== null) {
+                    currentBlock.insertAdjacentHTML('afterend', compiledTemplate);
+                } else {
+                    this.repeaterContainerTarget.insertAdjacentHTML('beforeend', compiledTemplate);
+                }
 
                 key++;
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            this.sort();
         });
     }
 
@@ -98,12 +110,14 @@ export default class extends Controller {
      */
     deleteBlock(event) {
         $(event.currentTarget).parents('.repeater-item').remove();
+
+        this.sort();
     }
 
     /**
      * Sorting nested fields
      *
-     * TODO: Do we need create a labels for this based on new order?
+     * TODO: Do we need create a labels for the blocks based on new order or not?
      */
     sort() {
         let repeater_field_name = this.data.get('name'),
@@ -129,7 +143,6 @@ export default class extends Controller {
         });
 
         if (this.hasRepeaterBlockCountTarget) {
-            console.log('lol');
             this.repeaterBlockCountTargets.forEach((v, k) => {
                 v.innerHTML = k + 1;
             })
