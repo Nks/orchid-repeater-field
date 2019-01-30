@@ -134,10 +134,11 @@ export default class extends Controller {
             }
 
             fields.forEach((field) => {
-                let originalName = '[' + field.dataset.repeaterNameKey + ']';
+                let repeaterNameKey = field.dataset.repeaterNameKey,
+                    originalName = '[' + repeaterNameKey.replace('.', '') + ']';
 
-                if (originalName.indexOf('[]')) {
-                    originalName.replace('[]', '');
+                if(repeaterNameKey.endsWith('.')) {
+                    originalName += '[]';
                 }
 
                 field.setAttribute('name', repeater_field_name + '[' + currentKey + ']' + originalName);

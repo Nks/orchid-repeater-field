@@ -66,8 +66,6 @@ abstract class RepeaterHandler extends Widget
     /**
      * Preparing fields and modifying their by names
      *
-     * TODO Add support of multiple values (select[])
-     *
      * @param int $blockKey
      * @param array $values
      * @return array
@@ -78,16 +76,28 @@ abstract class RepeaterHandler extends Widget
         $fields = [];
         foreach ($this->fields() as $field) {
             if ($field instanceof Field) {
-                $oldName = $field->get('name');
-                if (array_has($values, $oldName)) {
-                    $field->modifyValue($values[$oldName]);
+                $name = $field->get('name');
+                $bindValueName = $name;
+                $isArray = false;
+                if (substr($name, -1) === '.') {
+                    $bindValueName = substr($bindValueName, 0, -1);
+                    $isArray = true;
                 }
 
-                $fieldName = $this->repeaterName . '[' . $blockKey . '][' . $oldName . ']';
+                if (array_has($values, $bindValueName)) {
+                    $field->modifyValue($values[$bindValueName]);
+                }
+
+                $fieldName = $this->repeaterName . '[' . $blockKey . '][' . $bindValueName . ']';
+
+                if (true === $isArray) {
+                    $fieldName .= '[]';
+                }
 
                 $field->modifyName($fieldName);
+
                 //Using this for reorder
-                $field->attributes['data-repeater-name-key'] = $oldName;
+                $field->attributes['data-repeater-name-key'] = $name;
                 $field->inlineAttributes[] = 'data-repeater-name-key';
                 $fields[] = $field->render()->render();
             }
