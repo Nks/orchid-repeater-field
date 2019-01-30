@@ -80,11 +80,6 @@ class ServiceProvider extends BaseServiceProvider
             ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/assets' => public_path('vendor/platform/repeater-field'),
         ], 'repeater-field.assets');
 
-        // Publishing the translation files.
-//        $this->publishes([
-//            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/nakukryskin'),
-//        ], 'orchidrepeaterfield.lang');
-
         // Registering package commands.
         $this->commands([
             LinkCommand::class

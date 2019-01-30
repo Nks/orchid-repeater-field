@@ -22,50 +22,56 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
     Package automatically add styles and scripts to your platform then you not needed add those assets to your platform's configuration
     
 1. Create `RepeatersFieldsWidget.php` in your `app/Http/Widgets/Repeaters` directory. This widget will be used to add repeaters dynamically.
-Example:
-```php
-<?php
-
-namespace App\Http\Widgets\Repeaters;
-
-use Nakukryskin\OrchidRepeaterField\Handlers\RepeaterHandler;
-use Orchid\Screen\Fields\InputField;
-
-class RepeaterFields extends RepeaterHandler
-{
-
-    /**
-     * Return array of the fields
-     *
-     * @return array
-     */
-    function fields(): array
+    Example:
+    ```php
+    <?php
+    
+    namespace App\Http\Widgets\Repeaters;
+    
+    use Nakukryskin\OrchidRepeaterField\Handlers\RepeaterHandler;
+    use Orchid\Screen\Fields\InputField;
+    use Orchid\Screen\Fields\SelectField;
+    
+    class RepeaterFields extends RepeaterHandler
     {
-        return [
-            InputField::make('repeater_name')
-                ->type('text')
-                ->max(255)
-                ->required()
-                ->title('Nested Field')
-        ];
+    
+        /**
+         * Return array of the fields
+         *
+         * @return array
+         */
+        function fields(): array
+        {
+            return [
+                InputField::make('repeater_name')
+                    ->type('text')
+                    ->max(255)
+                    ->required()
+                    ->title('Nested Field'),
+                //Multiple fields must ends with the dot 
+                SelectField::make('select.')
+                             ->multiple()
+                             ->options([
+                                 'test' => 'Test',
+                                 'test2' => 'Test2'
+                             ])
+                             ->required()
+            ];
+        }
     }
-}
-```
+    ```
 
 1. Simply start adding the `RepeaterField::make('repeater')` in your screen:
-Example:
-```php
-    public function fields(): array
-    {
-        return [
-            RepeaterField::make('repeater')
-                ->title('Repeater')
-                ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class),
-        ];
-    }
-```
+    Example:
+    ```php
+        public function fields(): array
+        {
+            return [
+                RepeaterField::make('repeater')
+                    ->title('Repeater')
+                    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class),
+            ];
+        }
+    ```
 
 1. Open your screen and check that the repeater fields here
-
-## Known issues
-Repeater can't be used for multiple selection fields for now.
