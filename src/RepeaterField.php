@@ -7,10 +7,9 @@ namespace Nakukryskin\OrchidRepeaterField;
 use Orchid\Screen\Field;
 
 /**
- * Creating repeater fields based on the fields which provided to the endpoint
+ * Creating repeater fields based on the fields which provided to the endpoint.
  *
  * Class RepeaterField
- * @package Nakukryskin\OrchidRepeaterField
  *
  * @method $this min($value = null)
  * @method $this max($value = null)
@@ -22,7 +21,7 @@ use Orchid\Screen\Field;
 class RepeaterField extends Field
 {
     /**
-     * View name
+     * View name.
      *
      * @var string
      */
@@ -45,7 +44,7 @@ class RepeaterField extends Field
      */
     public $attributes = [
         'class' => 'form-control',
-        'original_name' => null
+        'original_name' => null,
     ];
 
     /**
@@ -57,12 +56,11 @@ class RepeaterField extends Field
         'required',
         'min',
         'max',
-        'name'
+        'name',
     ];
 
-
     /**
-     * Creating an instance of the repeater field
+     * Creating an instance of the repeater field.
      *
      * @param string $name
      * @return RepeaterField

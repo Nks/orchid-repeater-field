@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
 use Orchid\Platform\Dashboard;
+use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -28,7 +28,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerResources();
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'platform');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'platform');
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
@@ -43,8 +43,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
-            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__ . '/../'));
+        if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
+            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../'));
         }
 
         // Register the service the package provides.
@@ -72,34 +72,32 @@ class ServiceProvider extends BaseServiceProvider
     {
         // Publishing the views.
         $this->publishes([
-            ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views' => base_path('resources/views/vendor/platform/fields'),
-        ], 'platform');
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views' => base_path('resources/views/vendor/platform/fields'),
+        ], 'repeater-field.views');
 
         // Publishing assets.
         $this->publishes([
-            ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/assets' => public_path('vendor/platform/repeater-field'),
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/assets' => public_path('vendor/platform/repeater-field'),
         ], 'repeater-field.assets');
 
         // Registering package commands.
         $this->commands([
-            LinkCommand::class
+            LinkCommand::class,
         ]);
     }
 
     /**
-     * Registering resources
+     * Registering resources.
      *
      * @throws \Exception
      */
     private function registerResources(): void
     {
-        if (!file_exists(public_path('orchid_repeater'))) {
+        if (! file_exists(public_path('orchid_repeater'))) {
             return;
         }
 
         $this->dashboard->registerResource('scripts', mix('/js/repeater.js', 'orchid_repeater'));
         $this->dashboard->registerResource('stylesheets', mix('css/repeater.css', 'orchid_repeater'));
-
-
     }
 }
