@@ -73,7 +73,7 @@ class ServiceProvider extends BaseServiceProvider
         // Publishing the views.
         $this->publishes([
             ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views' => base_path('resources/views/vendor/platform/fields'),
-        ], 'platform');
+        ], 'repeater-field.views');
 
         // Publishing assets.
         $this->publishes([

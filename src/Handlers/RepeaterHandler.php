@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Handlers;
 
+use Illuminate\View\View;
 use Orchid\Screen\Field;
 use Orchid\Widget\Widget;
 
@@ -15,7 +16,19 @@ use Orchid\Widget\Widget;
  */
 abstract class RepeaterHandler extends Widget
 {
+    /**
+     * Repeater name which will be used as prefix
+     *
+     * @var array|\Illuminate\Http\Request|string
+     */
     public $repeaterName;
+
+    /**
+     * How much blocks we need generate in one request
+     *
+     * @var array|\Illuminate\Http\Request|int|string
+     */
+    public $num = 1;
 
     /**
      * @var null
@@ -25,6 +38,11 @@ abstract class RepeaterHandler extends Widget
     public function __construct()
     {
         $this->repeaterName = request('repeater_name', null);
+        $num = request('num', 1);
+
+        if ($num >= 1) {
+            $this->num = $num;
+        }
     }
 
     /**
@@ -49,15 +67,16 @@ abstract class RepeaterHandler extends Widget
         }
 
         $blocksCount = (int)request('blocks', 0);
-
-        if (is_null($values)) {
-            return [$this->renderFields($blocksCount)];
-        }
-
         $result = [];
 
-        foreach ($values as $key => $value) {
-            $result[] = $this->renderFields($key, $value);
+        if (is_null($values)) {
+            for ($i = 0; $i < $this->num; $i++) {
+                $result[] = $this->renderFields($blocksCount + $i);
+            }
+        } else {
+            foreach ($values as $key => $value) {
+                $result[] = $this->renderFields($key, $value);
+            }
         }
 
         return $result;
@@ -99,7 +118,12 @@ abstract class RepeaterHandler extends Widget
                 //Using this for reorder
                 $field->attributes['data-repeater-name-key'] = $name;
                 $field->inlineAttributes[] = 'data-repeater-name-key';
-                $fields[] = $field->render()->render();
+
+                $view = $field->render();
+
+                if ($view instanceof View) {
+                    $fields[] = $view->render();
+                }
             }
         }
 

@@ -1,5 +1,3 @@
-WIP
-
 # Orchid Platform Repeater Field
 
 ![Orchid Platform Repeater Field](https://user-images.githubusercontent.com/349293/51706442-7df0de00-202f-11e9-9a38-fd1a204c93bc.png)
@@ -75,3 +73,20 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
     ```
 
 1. Open your screen and check that the repeater fields here
+
+# Advanced usage
+
+Repeater field also support required, max and min parameters. You can add these parameters with call the RepeaterField.
+
+```php
+RepeaterField::make('repeater')
+    ->title('Repeater')
+    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->required()
+    ->min(10)
+    ->max(20)
+```
+
+If `required()` passed to the constructor `min()` automatically will set to 1. If user will try delete this field it will be prevented and show the message.
+
+To show required message on save you must add this rule to your screen rules, eg. `'content.*.repeater' => 'required'`
