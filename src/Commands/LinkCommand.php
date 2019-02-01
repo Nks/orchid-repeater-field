@@ -37,18 +37,18 @@ class LinkCommand extends Command
             return;
         }
 
-        $this->laravel->make('files')->link(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/public/'),
+        $this->laravel->make('files')->link(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public/'),
             public_path('orchid_repeater'));
 
         $this->info('The [public/orchid_repeater] directory has been linked.');
     }
 
     /**
-     * Adding orchid_repeater to .gitignore
+     * Adding orchid_repeater to .gitignore.
      */
     private function updateGitIgnore(): void
     {
-        if (!file_exists(app_path('../.gitignore'))) {
+        if (! file_exists(app_path('../.gitignore'))) {
             $this->warn('Unable to locate ".gitignore".  Did you move this file?');
             $this->warn('A semantic link to public files was not added to the ignore list');
 
@@ -58,7 +58,7 @@ class LinkCommand extends Command
         $str = file_get_contents(app_path('../.gitignore'));
 
         if ($str !== false && strpos($str, '/public/orchid_repeater') === false) {
-            file_put_contents(app_path('../.gitignore'), $str . PHP_EOL . '/public/orchid_repeater' . PHP_EOL);
+            file_put_contents(app_path('../.gitignore'), $str.PHP_EOL.'/public/orchid_repeater'.PHP_EOL);
         }
     }
 }
