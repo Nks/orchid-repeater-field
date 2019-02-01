@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Handlers;
 
-use Illuminate\View\View;
 use Orchid\Screen\Field;
+use Illuminate\View\View;
 use Orchid\Widget\Widget;
 
 /**
- * Modifying the fields to the correct data. Allow to send data to this widget
+ * Modifying the fields to the correct data. Allow to send data to this widget.
  *
  * Class RepeaterHandler
- * @package App\Orchid\Fields
  */
 abstract class RepeaterHandler extends Widget
 {
     /**
-     * Repeater name which will be used as prefix
+     * Repeater name which will be used as prefix.
      *
      * @var array|\Illuminate\Http\Request|string
      */
     public $repeaterName;
 
     /**
-     * How much blocks we need generate in one request
+     * How much blocks we need generate in one request.
      *
      * @var array|\Illuminate\Http\Request|int|string
      */
@@ -46,19 +45,19 @@ abstract class RepeaterHandler extends Widget
     }
 
     /**
-     * Return array of the fields
+     * Return array of the fields.
      *
      * @return Field[]
      */
-    abstract function fields(): array;
+    abstract public function fields(): array;
 
     /**
-     * Return rendered fields
+     * Return rendered fields.
      *
      * @return array
      * @throws \Throwable
      */
-    public final function handler()
+    final public function handler()
     {
         $values = null;
 
@@ -66,7 +65,7 @@ abstract class RepeaterHandler extends Widget
             $values = request('value', null);
         }
 
-        $blocksCount = (int)request('blocks', 0);
+        $blocksCount = (int) request('blocks', 0);
         $result = [];
 
         if (is_null($values)) {
@@ -83,7 +82,7 @@ abstract class RepeaterHandler extends Widget
     }
 
     /**
-     * Preparing fields and modifying their by names
+     * Preparing fields and modifying their by names.
      *
      * @param int $blockKey
      * @param array $values
@@ -107,7 +106,7 @@ abstract class RepeaterHandler extends Widget
                     $field->modifyValue($values[$bindValueName]);
                 }
 
-                $fieldName = $this->repeaterName . '[' . $blockKey . '][' . $bindValueName . ']';
+                $fieldName = $this->repeaterName.'['.$blockKey.']['.$bindValueName.']';
 
                 if (true === $isArray) {
                     $fieldName .= '[]';
