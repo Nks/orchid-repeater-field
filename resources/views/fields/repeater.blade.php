@@ -19,7 +19,7 @@
                     <section class="repeaters_container" data-target="fields--repeater.blocks"></section>
                 </section>
                 <button class="btn btn-default pull-right" type="button"
-                        data-action="click->fields--repeater#addBlock"
+                        data-action="click->fields--repeater#addNewBlock"
                         data-target="fields--repeater.addBlockButton">
                     <i class="icon-plus m-r-xs"></i> {{ __('Add block') }}
                 </button>

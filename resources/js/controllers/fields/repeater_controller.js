@@ -115,12 +115,20 @@ export default class extends Controller {
         this.contentTarget.classList.toggle('empty', this.blocksTarget.querySelectorAll('.repeater-item').length === 0);
     }
 
+    addNewBlock(event) {
+        this.addBlock();
+    }
+
+    addBlockAfter(event) {
+        const currentBlock = event.currentTarget.closest('.repeater-item');
+        this.addBlock(currentBlock)
+    }
+
     /**
      * Adding new blocks based on number of blocks which we have right now
      */
-    addBlock(event) {
+    addBlock(currentBlock) {
         let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length,
-            currentBlock = event.currentTarget.closest('.repeater-item'),
             num = event.detail.blocksNum || 1;
 
         if (this.options.max && blocksCount >= this.options.max) {
@@ -142,7 +150,7 @@ export default class extends Controller {
                         block_count: key + 1
                     });
 
-                if (currentBlock !== null) {
+                if (currentBlock != null) {
                     currentBlock.insertAdjacentHTML('afterend', compiledTemplate);
                 } else {
                     this.blocksTarget.insertAdjacentHTML('beforeend', compiledTemplate);

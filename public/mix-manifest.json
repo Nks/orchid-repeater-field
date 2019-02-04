@@ -1,4 +1,6 @@
 {
-    "/js/repeater.js": "/js/repeater.js?id=5d81b5f17b38717071e7",
-    "/css/repeater.css": "/css/repeater.css?id=befd48e70b7a53233eaf"
+    "/js/repeater.js": "/js/repeater.js",
+    "/css/repeater.css": "/css/repeater.css",
+    "/js/repeater.js.map": "/js/repeater.js.map",
+    "/css/repeater.css.map": "/css/repeater.css.map"
 }
