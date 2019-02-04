@@ -1,41 +1,72 @@
 .repeater {
-  .card {
-    margin-top: 1rem;
+  .content {
+    .no-value-message,
+    .loading-message {
+      padding: 20px;
+      border: #ccc dashed 2px;
+      text-align: center;
+      display: none;
 
-    &:first-child {
-      margin-top: 0;
+      > span {
+        font-size: 20px;
+        animation-name: spin;
+        animation-duration: 2000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        display: block;
+      }
     }
-    > .card-header {
-      .actions {
-        span {
-          &.action {
-            cursor: pointer;
+
+    &.empty {
+      .no-value-message {
+        display: block;
+      }
+    }
+
+    &.loading {
+      .no-value-message {
+        display: none;
+      }
+
+      .loading-message {
+        display: block;
+      }
+    }
+
+    .card {
+      margin-top: 1rem;
+
+      &:first-child {
+        margin-top: 0;
+      }
+      > .card-header {
+        .actions {
+          span {
+            &.action {
+              cursor: pointer;
+            }
+
+            &.badge {
+              opacity: 0.3;
+            }
+
+            &.card-handle {
+              cursor: move;
+            }
           }
 
-          &.badge {
-            opacity: 0.3;
-          }
+          margin: 0;
         }
       }
     }
   }
+}
 
-  .add_block {
-    margin-top: 1rem;
-    display: block;
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, .125);
-    font-size: 20px;
-    height: 11px;
-    cursor: pointer;
-
-    &:before {
-      background-color: $white;
-    }
-
-    &.disabled {
-      opacity: .3;
-    }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

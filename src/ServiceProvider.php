@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField;
 
-use Orchid\Platform\Dashboard;
-use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
+use Orchid\Platform\Dashboard;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -26,7 +26,8 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->dashboard = $dashboard;
 
-        $this->registerResources();
+        $this->registerResources()
+            ->registerTranslations();
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'platform');
 
@@ -43,7 +44,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
+        if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
             define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../'));
         }
 
@@ -91,13 +92,28 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @throws \Exception
      */
-    private function registerResources(): void
+    private function registerResources(): self
     {
-        if (! file_exists(public_path('orchid_repeater'))) {
-            return;
+        if (!file_exists(public_path('orchid_repeater'))) {
+            return $this;
         }
 
         $this->dashboard->registerResource('scripts', mix('/js/repeater.js', 'orchid_repeater'));
         $this->dashboard->registerResource('stylesheets', mix('css/repeater.css', 'orchid_repeater'));
+
+        return $this;
+    }
+
+
+    /**
+     * Registering languages
+     *
+     * @return ServiceProvider
+     */
+    private function registerTranslations(): self
+    {
+        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/lang/'));
+
+        return $this;
     }
 }

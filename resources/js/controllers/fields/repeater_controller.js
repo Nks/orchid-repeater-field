@@ -4,15 +4,14 @@ import dragula from "dragula";
 
 let sqrl = require('squirrelly');
 
-let $ = global.$;
-
 export default class extends Controller {
     /**
      * @type {string[]}
      */
     static targets = [
         "template",
-        "repeaterContainer",
+        "blocks",
+        "content",
         "repeaterBlockCount",
         "addBlockButton"
     ];
@@ -32,8 +31,6 @@ export default class extends Controller {
 
         this.options = Object.assign(this.options, JSON.parse(this.data.get('options')));
 
-        console.log(this.options);
-
         sqrl.autoEscaping(false);
         this.template = sqrl.Compile(this.templateTarget.innerHTML);
         this.fetchFields();
@@ -48,6 +45,8 @@ export default class extends Controller {
             field_name = this.data.get('name'),
             value = JSON.parse(this.data.get('value'));
 
+        this.contentTarget.classList.add('loading');
+
         axios.post(this.data.get('url'), {
             value: value,
             repeater_name: field_name
@@ -55,7 +54,7 @@ export default class extends Controller {
             r.data.results.forEach((v, k) => {
                 if (self.options.max === null || k < self.options.max) {
                     let content = v.join('', v);
-                    self.repeaterContainerTarget.insertAdjacentHTML('beforeend', self.template({
+                    self.blocksTarget.insertAdjacentHTML('beforeend', self.template({
                         content: content,
                         block_key: k,
                         block_count: k + 1
@@ -63,30 +62,27 @@ export default class extends Controller {
                 }
             });
 
-            $('[data-toggle="tooltip"]').tooltip();
+            this.contentTarget.classList.remove('loading');
 
             self.initMinRequiredBlock();
+
+            this.checkEmpty();
         });
     }
 
     initMinRequiredBlock() {
-        console.log('Init min or required blocks');
-
         //Exit when required or min aren't set
         if (this.options.required !== true && !this.options.min) {
             return;
         }
 
-        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
-
-        console.log(`Blocks count ${blocksCount}`);
+        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length;
 
         if (!blocksCount && this.options.required === true && this.options.min === null) {
             this.options.min = 1;
         }
 
         if (this.options.min !== null && this.options.min > blocksCount) {
-            console.log('min set');
             const click = new CustomEvent('click', {
                 detail: {
                     blocksNum: this.options.min - blocksCount
@@ -103,7 +99,7 @@ export default class extends Controller {
     initDragDrop() {
         let self = this;
 
-        dragula([this.repeaterContainerTarget], {
+        dragula([this.blocksTarget], {
             moves: function (el, container, handle) {
                 return handle.classList.contains('card-handle');
             }
@@ -113,10 +109,17 @@ export default class extends Controller {
     }
 
     /**
+     * Check if blocks empty
+     */
+    checkEmpty() {
+        this.contentTarget.classList.toggle('empty', this.blocksTarget.querySelectorAll('.repeater-item').length === 0);
+    }
+
+    /**
      * Adding new blocks based on number of blocks which we have right now
      */
     addBlock(event) {
-        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length,
+        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length,
             currentBlock = event.currentTarget.closest('.repeater-item'),
             num = event.detail.blocksNum || 1;
 
@@ -142,15 +145,15 @@ export default class extends Controller {
                 if (currentBlock !== null) {
                     currentBlock.insertAdjacentHTML('afterend', compiledTemplate);
                 } else {
-                    this.repeaterContainerTarget.insertAdjacentHTML('beforeend', compiledTemplate);
+                    this.blocksTarget.insertAdjacentHTML('beforeend', compiledTemplate);
                 }
 
                 key++;
             });
 
-            $('[data-toggle="tooltip"]').tooltip();
-
             this.sort();
+
+            this.checkEmpty();
         });
     }
 
@@ -160,26 +163,26 @@ export default class extends Controller {
      * @param event
      */
     deleteBlock(event) {
-        let blocksCount = this.repeaterContainerTarget.querySelectorAll('.repeater-item').length;
+        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length;
 
         if (this.options.min && blocksCount <= this.options.min) {
             alert(`Minimum number of blocks reached`);
             return;
         }
 
-        $(event.currentTarget).parents('.repeater-item').remove();
+        event.currentTarget.closest('.repeater-item').remove();
 
         this.sort();
+
+        this.checkEmpty();
     }
 
     /**
      * Sorting nested fields
-     *
-     * TODO: Do we need create a labels for the blocks based on new order or not?
      */
     sort() {
         let repeater_field_name = this.data.get('name'),
-            blocks = this.repeaterContainerTarget.querySelectorAll('.repeater-item');
+            blocks = this.blocksTarget.querySelectorAll('.repeater-item');
 
         blocks.forEach((block, currentKey) => {
             block.dataset.sort = currentKey;
@@ -209,7 +212,7 @@ export default class extends Controller {
     }
 
     disconnect() {
-        this.repeaterContainerTarget.innerHTML = '';
+        this.blocksTarget.innerHTML = '';
         this.template = null;
     }
 
