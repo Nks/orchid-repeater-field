@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
 use Orchid\Platform\Dashboard;
+use Nakukryskin\OrchidRepeaterField\Commands\LinkCommand;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -44,7 +44,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
+        if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
             define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../'));
         }
 
@@ -94,7 +94,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerResources(): self
     {
-        if (!file_exists(public_path('orchid_repeater'))) {
+        if (! file_exists(public_path('orchid_repeater'))) {
             return $this;
         }
 
@@ -104,9 +104,8 @@ class ServiceProvider extends BaseServiceProvider
         return $this;
     }
 
-
     /**
-     * Registering languages
+     * Registering languages.
      *
      * @return ServiceProvider
      */
