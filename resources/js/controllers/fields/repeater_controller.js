@@ -9,11 +9,11 @@ export default class extends Controller {
      * @type {string[]}
      */
     static targets = [
-        "template",
         "blocks",
         "content",
         "repeaterBlockCount",
-        "addBlockButton"
+        "addBlockButton",
+        "repeaterField"
     ];
 
     template;
@@ -23,44 +23,78 @@ export default class extends Controller {
         max: null
     };
 
+    drake = null;
+
     connect() {
-        //We not needed work with this on preview
-        if (document.documentElement.hasAttribute("data-turbolinks-preview")) {
+        //We not needed work with this on preview or when we dragging elements
+        if (document.documentElement.hasAttribute("data-turbolinks-preview") || document.body.classList.contains('gu-unselectable')) {
             return;
         }
 
         this.options = Object.assign(this.options, JSON.parse(this.data.get('options')));
+        this.prepareTemplate()
+            .fetchFields()
+            .initDragDrop();
+    }
 
+    prepareTemplate() {
+        const templateElement = document.getElementById(this.data.get('template'));
         sqrl.autoEscaping(false);
-        this.template = sqrl.Compile(this.templateTarget.innerHTML);
-        this.fetchFields();
-        this.initDragDrop();
+
+        if (templateElement) {
+            this.template = sqrl.Compile(templateElement.innerHTML);
+        }
+
+        return this;
     }
 
     /**
      * Retrieving fields from the backend if they are exists
      */
     fetchFields() {
+        if (this.drake && this.drake.dragging === true) {
+            return;
+        }
+
         let self = this,
-            field_name = this.data.get('name'),
-            value = JSON.parse(this.data.get('value'));
+            field_name = this.repeaterFieldTarget.name,
+            values = JSON.parse(this.data.get('value'));
 
         this.contentTarget.classList.add('loading');
 
         axios.post(this.data.get('url'), {
-            value: value,
+            values: values,
             repeater_name: field_name
         }).then((r) => {
-            r.data.results.forEach((v, k) => {
-                if (self.options.max === null || k < self.options.max) {
-                    let content = v.join('', v);
-                    self.blocksTarget.insertAdjacentHTML('beforeend', self.template({
-                        content: content,
-                        block_key: k,
-                        block_count: k + 1
-                    }));
-                }
-            });
+            //if we haven't template yet (nested repeater) we can get it from the widget directly
+            if (!this.template && r.data.results.template) {
+                let element = document.createElement('template');
+
+                element.innerHTML = r.data.results.template.trim();
+
+                let template = element.content.firstChild;
+
+                this.template = sqrl.Compile(template.innerHTML);
+            }
+
+            if (!this.template) {
+                window.platform.alert(`Error fetching repeater field template for ${this.options.title} (${this.options.name}).`, 'danger');
+
+                return;
+            }
+
+            if (r.data.results.fields) {
+                r.data.results.fields.forEach((content, index) => {
+                    if (self.options.max === null || index < self.options.max) {
+                        self.blocksTarget.insertAdjacentHTML('beforeend', self.template({
+                            name: self.blocksTarget.dataset.containerKey,
+                            content: content,
+                            block_key: index,
+                            block_count: self.options.title + ' ' + (index + 1),
+                        }));
+                    }
+                });
+            }
 
             this.contentTarget.classList.remove('loading');
 
@@ -68,6 +102,8 @@ export default class extends Controller {
 
             this.checkEmpty();
         });
+
+        return this;
     }
 
     initMinRequiredBlock() {
@@ -85,12 +121,14 @@ export default class extends Controller {
         if (this.options.min !== null && this.options.min > blocksCount) {
             const click = new CustomEvent('click', {
                 detail: {
-                    blocksNum: this.options.min - blocksCount
+                    blocksNum: this.options.min - blocksCount,
                 }
             });
 
             this.addBlockButtonTarget.dispatchEvent(click);
         }
+
+        return this;
     }
 
     /**
@@ -99,13 +137,17 @@ export default class extends Controller {
     initDragDrop() {
         let self = this;
 
-        dragula([this.blocksTarget], {
+        this.drake = dragula([this.blocksTarget], {
             moves: function (el, container, handle) {
-                return handle.classList.contains('card-handle');
+                let isCorrectHandle = (handle.dataset.parentContainerKey === self.blocksTarget.dataset.containerKey);
+
+                return handle.classList.contains('card-handle') && isCorrectHandle;
             }
-        }).on('drop', function () {
-            self.sort();
+        }).on('drop', () => {
+            this.sort();
         });
+
+        return this;
     }
 
     /**
@@ -113,21 +155,33 @@ export default class extends Controller {
      */
     checkEmpty() {
         this.contentTarget.classList.toggle('empty', this.blocksTarget.querySelectorAll('.repeater-item').length === 0);
+
+        return this;
     }
 
     addNewBlock(event) {
         this.addBlock();
+
+        return this;
     }
 
     addBlockAfter(event) {
         const currentBlock = event.currentTarget.closest('.repeater-item');
-        this.addBlock(currentBlock)
+        this.addBlock(currentBlock);
+
+        return this;
     }
 
     /**
      * Adding new blocks based on number of blocks which we have right now
      */
     addBlock(currentBlock) {
+        let self = this;
+
+        if (!this.template) {
+            return;
+        }
+
         let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length,
             num = event.detail.blocksNum || 1;
 
@@ -137,32 +191,37 @@ export default class extends Controller {
         }
 
         axios.post(this.data.get('url'), {
-            repeater_name: this.data.get('name'),
+            repeater_name: this.repeaterFieldTarget.name,
             blocks: blocksCount,
             num: num
         }).then((r) => {
             let key = blocksCount;
-            r.data.results.forEach((v, k) => {
-                let content = v.join('', v),
-                    compiledTemplate = this.template({
+            if (r.data.results.fields) {
+                r.data.results.fields.forEach((content, index) => {
+                    let compiledTemplate = this.template({
+                        name: this.blocksTarget.dataset.containerKey,
                         content: content,
-                        block_key: key,
-                        block_count: key + 1
+                        block_key: index,
+                        block_count: self.options.title + ' ' + (index + 1),
                     });
 
-                if (currentBlock != null) {
-                    currentBlock.insertAdjacentHTML('afterend', compiledTemplate);
-                } else {
-                    this.blocksTarget.insertAdjacentHTML('beforeend', compiledTemplate);
-                }
+                    console.log(self.options.title + ' ' + (index + 1));
 
-                key++;
-            });
+                    if (currentBlock != null) {
+                        currentBlock.insertAdjacentHTML('afterend', compiledTemplate);
+                    } else {
+                        this.blocksTarget.insertAdjacentHTML('beforeend', compiledTemplate);
+                    }
 
-            this.sort();
+                    key++;
+                });
+            }
 
-            this.checkEmpty();
+            this.sort()
+                .checkEmpty();
         });
+
+        return this;
     }
 
     /**
@@ -180,17 +239,20 @@ export default class extends Controller {
 
         event.currentTarget.closest('.repeater-item').remove();
 
-        this.sort();
+        this.sort()
+            .checkEmpty();
 
-        this.checkEmpty();
+        return this;
     }
 
     /**
      * Sorting nested fields
      */
     sort() {
-        let repeater_field_name = this.data.get('name'),
-            blocks = this.blocksTarget.querySelectorAll('.repeater-item');
+        let self = this,
+            repeater_field_name = this.repeaterFieldTarget.name,
+            //We must fetch only first level of the repeater fields
+            blocks = this.blocksTarget.querySelectorAll(':scope > .repeater-item');
 
         blocks.forEach((block, currentKey) => {
             block.dataset.sort = currentKey;
@@ -208,20 +270,19 @@ export default class extends Controller {
                     originalName += '[]';
                 }
 
-                field.setAttribute('name', repeater_field_name + '[' + currentKey + ']' + originalName);
+                const resultName = repeater_field_name + '[' + currentKey + ']' + originalName;
+
+                field.setAttribute('name', resultName);
             })
         });
 
         if (this.hasRepeaterBlockCountTarget) {
-            this.repeaterBlockCountTargets.forEach((v, k) => {
-                v.innerHTML = k + 1;
+            this.repeaterBlockCountTargets.forEach((content, index) => {
+                content.innerHTML = self.options.title + ' ' + (index + 1);
             })
         }
-    }
 
-    disconnect() {
-        this.blocksTarget.innerHTML = '';
-        this.template = null;
+        return this;
     }
 
 }

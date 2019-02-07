@@ -31,6 +31,10 @@
       .loading-message {
         display: block;
       }
+
+      .card {
+        display: none;
+      }
     }
 
     .card {
@@ -59,6 +63,11 @@
         }
       }
     }
+  }
+
+
+  &-template {
+    display: none;
   }
 }
 
