@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Handlers;
 
-use Illuminate\View\View;
-use Orchid\Screen\Builder;
 use Orchid\Screen\Field;
-use Orchid\Screen\Repository;
+use Illuminate\View\View;
 use Orchid\Widget\Widget;
+use Orchid\Screen\Builder;
+use Orchid\Screen\Repository;
 
 /**
  * Modifying the fields to the correct data. Allow to send data to this widget.
@@ -26,7 +26,6 @@ abstract class RepeaterHandler extends Widget
      */
     public $repeaterName;
 
-
     public $blocksCount = 0;
 
     /**
@@ -37,7 +36,7 @@ abstract class RepeaterHandler extends Widget
     public $num = 1;
 
     /**
-     * Values for the current repeater
+     * Values for the current repeater.
      *
      * @var array
      */
@@ -46,7 +45,7 @@ abstract class RepeaterHandler extends Widget
     public function __construct()
     {
         $this->repeaterName = request('repeater_name', null);
-        $this->blocksCount = (int)request('blocks', 0);
+        $this->blocksCount = (int) request('blocks', 0);
 
         //Maybe we need add more than one block?
         $num = request('num', 1);
@@ -56,7 +55,7 @@ abstract class RepeaterHandler extends Widget
         }
 
         if (request()->has('values')) {
-            $this->values = (array)request()->get('values', []);
+            $this->values = (array) request()->get('values', []);
         }
     }
 
@@ -92,7 +91,6 @@ abstract class RepeaterHandler extends Widget
 
         return $result;
     }
-
 
     /**
      * Build the form with the repeater fields.
@@ -166,6 +164,4 @@ abstract class RepeaterHandler extends Widget
     {
         return $this->repeaterName.'['.($this->blocksCount + $index).']';
     }
-
-
 }
