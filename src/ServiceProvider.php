@@ -26,7 +26,8 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->dashboard = $dashboard;
 
-        $this->registerResources();
+        $this->registerResources()
+            ->registerTranslations();
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'platform');
 
@@ -91,13 +92,27 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @throws \Exception
      */
-    private function registerResources(): void
+    private function registerResources(): self
     {
         if (! file_exists(public_path('orchid_repeater'))) {
-            return;
+            return $this;
         }
 
         $this->dashboard->registerResource('scripts', mix('/js/repeater.js', 'orchid_repeater'));
         $this->dashboard->registerResource('stylesheets', mix('css/repeater.css', 'orchid_repeater'));
+
+        return $this;
+    }
+
+    /**
+     * Registering languages.
+     *
+     * @return ServiceProvider
+     */
+    private function registerTranslations(): self
+    {
+        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/lang/'));
+
+        return $this;
     }
 }
