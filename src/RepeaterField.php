@@ -61,7 +61,7 @@ class RepeaterField extends Field
     ];
 
     /**
-     * Set the template unique id
+     * Set the template unique id.
      *
      * @return self
      */
