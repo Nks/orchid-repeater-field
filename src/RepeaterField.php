@@ -17,6 +17,7 @@ use Orchid\Screen\Field;
  * @method $this help(string $value = null)
  * @method $this name($value = true)
  * @method $this handler($value = true)
+ * @method $this button_label(string $value = null)
  */
 class RepeaterField extends Field
 {
@@ -46,6 +47,7 @@ class RepeaterField extends Field
         'class' => 'form-control',
         'original_name' => null,
         'template' => null,
+        'button_label' => null,
     ];
 
     /**
@@ -61,18 +63,6 @@ class RepeaterField extends Field
     ];
 
     /**
-     * Set the template unique id.
-     *
-     * @return self
-     */
-    public function setTemplateId(): self
-    {
-        $key = 'repeater_'.str_random(8).'_'.str_random(12);
-
-        return $this->set('template', $key);
-    }
-
-    /**
      * Creating an instance of the repeater field.
      *
      * @param string $name
@@ -83,6 +73,6 @@ class RepeaterField extends Field
         return (new static)->name($name)
             ->set('original_name', $name)
             ->value([])
-            ->setTemplateId();
+            ->set('template', 'repeater_'.str_random(32));
     }
 }
