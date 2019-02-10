@@ -67,7 +67,7 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
             return [
                 RepeaterField::make('repeater')
                     ->title('Repeater')
-                    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class),
+                    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class),
             ];
         }
     ```
@@ -81,7 +81,7 @@ Repeater field also support required, max and min parameters. You can add these 
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class)
     ->required()
     ->min(10)
     ->max(20)
