@@ -112,7 +112,7 @@ export default class extends Controller {
             return;
         }
 
-        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length;
+        let blocksCount = this.blocksTarget.querySelectorAll(':scope > .repeater-item').length;
 
         if (!blocksCount && this.options.required === true && this.options.min === null) {
             this.options.min = 1;
@@ -154,7 +154,7 @@ export default class extends Controller {
      * Check if blocks empty
      */
     checkEmpty() {
-        this.contentTarget.classList.toggle('empty', this.blocksTarget.querySelectorAll('.repeater-item').length === 0);
+        this.contentTarget.classList.toggle('empty', this.blocksTarget.querySelectorAll(':scope > .repeater-item').length === 0);
 
         return this;
     }
@@ -182,7 +182,7 @@ export default class extends Controller {
             return;
         }
 
-        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length,
+        let blocksCount = this.blocksTarget.querySelectorAll(':scope > .repeater-item').length,
             num = event.detail.blocksNum || 1;
 
         if (this.options.max && blocksCount >= this.options.max) {
@@ -230,7 +230,7 @@ export default class extends Controller {
      * @param event
      */
     deleteBlock(event) {
-        let blocksCount = this.blocksTarget.querySelectorAll('.repeater-item').length;
+        let blocksCount = this.blocksTarget.querySelectorAll(':scope > .repeater-item').length;
 
         if (this.options.min && blocksCount <= this.options.min) {
             alert(`Minimum number of blocks reached`);

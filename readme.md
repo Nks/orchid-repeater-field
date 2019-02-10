@@ -90,3 +90,12 @@ RepeaterField::make('repeater')
 If `required()` passed to the constructor `min()` automatically will set to 1. If user will try delete this field it will be prevented and show the message.
 
 To show required message on save you must add this rule to your screen rules, eg. `'content.*.repeater' => 'required'`
+
+You also can rename button label with your own with method `button_label()`. 
+eg.
+```php
+RepeaterField::make('repeater')
+    ->title('Repeater')
+    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->button_label('Add new repeater field')
+```

@@ -11,7 +11,9 @@
             <div class="col-md-12">
                 <section class="content b wrapper-xs mb-2 empty loading" data-target="fields--repeater.content">
                     <div class="no-value-message">
-                        {{ __('Click the "Add Block" button below to start adding the items.') }}
+                        {{ __('Click the ":button_label" button below to start adding the items.', [
+                            'button_label' => ($button_label ?? __('Add block'))
+                        ]) }}
                     </div>
                     <div class="loading-message">
                         <span class="icon icon-loading"></span>
@@ -22,7 +24,7 @@
                 <button class="btn btn-default pull-right" type="button"
                         data-action="click->fields--repeater#addNewBlock"
                         data-target="fields--repeater.addBlockButton">
-                    <i class="icon-plus m-r-xs"></i> {{ __('Add block') }}
+                    <i class="icon-plus m-r-xs"></i> {{ $button_label ?? __('Add block') }}
                 </button>
             </div>
         </div>
