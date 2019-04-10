@@ -18,7 +18,8 @@
   ],
   "require": {
     "php": "^7.1.3",
-    "orchid/widget": "^1.2"
+    "orchid/widget": "^1.2",
+    "spomky-labs/base64url": "^2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",
