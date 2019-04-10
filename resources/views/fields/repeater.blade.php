@@ -4,7 +4,7 @@
          data-fields--repeater-handler="{{$handler}}"
          data-fields--repeater-options="{{ json_encode($attributes) }}"
          data-fields--repeater-template="{{ $template }}"
-         data-fields--repeater-url="{{route('platform.systems.widget', Base64Url\Base64Url::encode($handler))}}"
+         data-fields--repeater-url="{{route('platform.systems.widget', Crypt::encryptString($handler))}}"
          data-fields--repeater-value="{{ json_encode($value) }}">
         <input type="hidden" name="{{ $name }}" data-target="fields--repeater.repeaterField" value=""/>
         <div class="row">
