@@ -1,4 +1,5 @@
 {
-  "Click the \"Add Block\" button below to start creating your layout": "Нажмите кнопку \"Добавить блок\" ниже, чтобы начать добавлять макеты",
-  "Add block": "Добавить блок"
+  "Click the \":button_label\" button below to start creating your layout": "Нажмите кнопку \":button_label\" ниже, чтобы начать добавлять макеты",
+  "Add block": "Добавить блок",
+  "You cannot install %1$s because %1$s requires orchid/platform version %2$s or higher. You are running orchid/platform version %3$s.": "Вы не можете установить %1$s так как %1$s требует orchid/platform версии %2$s и выше. Текущая версия orchid/platform %3$s."
 }
