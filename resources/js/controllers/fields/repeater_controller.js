@@ -167,6 +167,7 @@ export default class extends Controller {
 
     addBlockAfter(event) {
         const currentBlock = event.currentTarget.closest('.repeater-item');
+        console.log(currentBlock);
         this.addBlock(currentBlock);
 
         return this;
@@ -270,7 +271,7 @@ export default class extends Controller {
                     originalName += '[]';
                 }
 
-                const resultName = repeater_field_name + '[' + currentKey + ']' + originalName;
+                const resultName = field.closest('.repeaters_container').dataset.containerKey + '[' + field.closest('.repeater-item').dataset.sort + ']' + originalName;
 
                 field.setAttribute('name', resultName);
             })

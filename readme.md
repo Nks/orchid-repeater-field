@@ -1,6 +1,6 @@
 # Orchid Platform Repeater Field
 
-![Orchid Platform Repeater Field](https://user-images.githubusercontent.com/349293/51706442-7df0de00-202f-11e9-9a38-fd1a204c93bc.png)
+![Orchid Platform Repeater Field](screenshots/repeater.jpg?raw=true)
 
 ## Brief
 This package adding basic support of repeater field to [Orchid RAD platform](https://github.com/orchidsoftware/platform).
@@ -14,10 +14,6 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
     `composer require nakukryskin/orchid-repeater-field`
     
     Latest version of laravel automatically discover package to use.
-    
-1. Create a link for assets with `php artisan orchid:repeater:link`. 
-    This command will simply create link to assets in your public directory with styling and javascript.
-    Package automatically add styles and scripts to your platform then you not needed add those assets to your platform's configuration
     
 1. Create `RepeatersFieldsWidget.php` in your `app/Http/Widgets/Repeaters` directory. This widget will be used to add repeaters dynamically.
     Example:

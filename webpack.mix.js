@@ -8,10 +8,7 @@ let webpackConfig = {
     },
 };
 
-if (!mix.inProduction()) {
-    mix.sourceMaps();
-    webpackConfig.devtool = 'source-map'
-} else {
+if (mix.inProduction()) {
     mix.version();
 }
 
