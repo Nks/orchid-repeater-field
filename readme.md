@@ -23,8 +23,8 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
     namespace App\Http\Widgets\Repeaters;
     
     use Nakukryskin\OrchidRepeaterField\Handlers\RepeaterHandler;
-    use Orchid\Screen\Fields\InputField;
-    use Orchid\Screen\Fields\SelectField;
+    use Orchid\Screen\Fields\Input;
+    use Orchid\Screen\Fields\Select;
     
     class RepeaterFields extends RepeaterHandler
     {
@@ -37,13 +37,13 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
         function fields(): array
         {
             return [
-                InputField::make('repeater_name')
+                Input::make('repeater_name')
                     ->type('text')
                     ->max(255)
                     ->required()
                     ->title('Nested Field'),
                 //Multiple fields must ends with the dot 
-                SelectField::make('select.')
+                Select::make('select.')
                              ->multiple()
                              ->options([
                                  'test' => 'Test',
@@ -63,7 +63,7 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
             return [
                 RepeaterField::make('repeater')
                     ->title('Repeater')
-                    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class),
+                    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class),
             ];
         }
     ```
@@ -77,7 +77,7 @@ Repeater field also support required, max and min parameters. You can add these 
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class)
     ->required()
     ->min(10)
     ->max(20)
