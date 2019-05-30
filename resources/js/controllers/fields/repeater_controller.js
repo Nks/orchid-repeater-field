@@ -29,7 +29,6 @@ export default class extends Controller {
     drake = null;
 
     connect() {
-        //  We not needed work with this on preview or when we dragging elements
         if (document.documentElement.hasAttribute('data-turbolinks-preview') || document.body.classList.contains('gu-unselectable')) {
             return;
         }

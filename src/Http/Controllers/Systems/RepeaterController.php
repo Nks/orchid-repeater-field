@@ -36,7 +36,7 @@ class RepeaterController extends Controller
      *
      * @var array|\Illuminate\Http\Request|int|string
      */
-    protected $num = 1;
+    protected $num = 0;
 
     /**
      * Values for the current repeater.
@@ -162,11 +162,7 @@ class RepeaterController extends Controller
 
         $this->repeaterName = $request->get('repeater_name');
         $this->blocksCount = (int)request('blocks', 0);
-        $num = $request->get('num', 1);
-
-        if ($num > 0) {
-            $this->num = $num;
-        }
+        $this->num = (int)$request->get('num', 0);
 
         if ($request->has('values')) {
             $this->values = (array)request()->get('values', []);
