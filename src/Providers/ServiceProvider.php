@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Nakukryskin\OrchidRepeaterField;
+namespace Nakukryskin\OrchidRepeaterField\Providers;
 
-use Orchid\Platform\Dashboard;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Orchid\Platform\Dashboard;
+use View;
 
 /**
  * Class ServiceProvider.
@@ -15,7 +16,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Required version of orchid/platform package.
      */
-    const REQUIRED_ORCHID_PLATFORM_VERSION = '3.8.1';
+    const REQUIRED_ORCHID_PLATFORM_VERSION = '4.7.1';
 
     /**
      * @var Dashboard
@@ -33,10 +34,11 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->dashboard = $dashboard;
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'platform');
+        $this->loadViewsFrom(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views', 'platform');
 
         $this->versionCompare()
             ->registerResources()
+            ->registerProviders()
             ->registerTranslations();
 
         // Publishing is only necessary when using the CLI.
@@ -53,14 +55,22 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
-            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../'));
+        if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
+
+            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__ . '/../../'));
+        }
+    }
+
+    /**
+     * Register provider.
+     */
+    public function registerProviders(): self
+    {
+        foreach ($this->provides() as $provide) {
+            $this->app->register($provide);
         }
 
-        // Register the service the package provides.
-        $this->app->singleton('repeater-field', function ($app) {
-            return new RepeaterField;
-        });
+        return $this;
     }
 
     /**
@@ -68,9 +78,11 @@ class ServiceProvider extends BaseServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
-        return ['repeater-field'];
+        return [
+            RouteServiceProvider::class,
+        ];
     }
 
     /**
@@ -82,7 +94,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         // Publishing the views.
         $this->publishes([
-            ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views' => base_path('resources/views/vendor/platform/fields'),
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views' => base_path('resources/views/vendor/platform/fields'),
         ], 'repeater-field.views');
     }
 
@@ -93,10 +105,11 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerResources(): self
     {
-        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public/');
+        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/public/');
 
-        \View::composer('platform::layouts.app', function () {
-            \Dashboard::registerResource('scripts', orchid_mix('/js/repeater.js', 'repeater'))
+        View::composer('platform::app', function () {
+            $this->dashboard
+                ->registerResource('scripts', orchid_mix('/js/repeater.js', 'repeater'))
                 ->registerResource('stylesheets', orchid_mix('/css/repeater.css', 'repeater'));
         });
 
@@ -110,7 +123,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerTranslations(): self
     {
-        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/lang/'));
+        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/lang/'));
 
         return $this;
     }
@@ -121,7 +134,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function versionCompare()
     {
-        if (! version_compare(\Dashboard::version(), self::REQUIRED_ORCHID_PLATFORM_VERSION, '>=')) {
+        if (!version_compare(\Dashboard::version(), self::REQUIRED_ORCHID_PLATFORM_VERSION, '>=')) {
             throw new \Exception(sprintf(__('You cannot install %1$s because %1$s requires orchid/platform version %2$s or higher. You are running orchid/platform version %3$s.'),
                 self::class, self::REQUIRED_ORCHID_PLATFORM_VERSION, \Orchid\Platform\Dashboard::VERSION));
         }
