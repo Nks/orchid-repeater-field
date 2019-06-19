@@ -8,6 +8,10 @@ This package adding basic support of repeater field to [Orchid RAD platform](htt
 ## Pre-requirements
 You must have installed and configured [Orchid Platform](https://github.com/orchidsoftware/platform)
 
+Version Support: 5.*
+
+For 4.7.1 version use [0.0.8 tag](https://github.com/Nks/orchid-repeater-field/tree/0.0.8).
+
 ## How to use
 
 1. Install package with composer: 
@@ -15,18 +19,18 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
     
     Latest version of laravel automatically discover package to use.
     
-1. Create `RepeatersFieldsWidget.php` in your `app/Http/Widgets/Repeaters` directory. This widget will be used to add repeaters dynamically.
+1. Create `RepeaterFields.php` in your Orchid Layouts directory. 
     Example:
     ```php
     <?php
     
-    namespace App\Http\Widgets\Repeaters;
+    namespace App\Http\Orchid\Layouts\Repeaters;
     
-    use Nakukryskin\OrchidRepeaterField\Handlers\RepeaterHandler;
+    use Orchid\Screen\Layouts\Rows;
     use Orchid\Screen\Fields\Input;
     use Orchid\Screen\Fields\Select;
     
-    class RepeaterFields extends RepeaterHandler
+    class RepeaterFields extends Rows
     {
     
         /**
@@ -63,7 +67,7 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
             return [
                 RepeaterField::make('repeater')
                     ->title('Repeater')
-                    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class),
+                    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
             ];
         }
     ```
@@ -77,7 +81,7 @@ Repeater field also support required, max and min parameters. You can add these 
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->handler(\App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
     ->required()
     ->min(10)
     ->max(20)
@@ -92,6 +96,6 @@ eg.
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->handler(App\Http\Widgets\Repeaters\RepeaterFields::class)
+    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
     ->button_label('Add new repeater field')
 ```
