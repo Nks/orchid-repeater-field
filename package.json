@@ -14,17 +14,17 @@
     "axios": "^0.18",
     "babel-preset-env": "^1.7.0",
     "dragula": "^3.7.2",
-    "laravel-mix": "^4.0.13",
+    "laravel-mix": "^4.0.15",
     "node-sass": "^4.11.0",
     "open-color": "^1.6.3",
     "squirrelly": "^7.0.4",
     "stimulus": "^1.1.1"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "resolve-url-loader": "^2.3.1",
+    "eslint-plugin-import": "^2.17.3",
+    "resolve-url-loader": "^2.3.2",
     "sass-loader": "^7.1.0"
   }
 }

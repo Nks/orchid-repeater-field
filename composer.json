@@ -17,8 +17,7 @@
     "Repeater Field"
   ],
   "require": {
-    "php": "^7.1.3",
-    "orchid/widget": "^1.2"
+    "php": "^7.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",
@@ -39,11 +38,8 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Nakukryskin\\OrchidRepeaterField\\ServiceProvider"
-      ],
-      "aliases": {
-        "RepeaterField": "Nakukryskin\\OrchidRepeaterField\\Facades\\OrchidRepeaterField"
-      }
+        "Nakukryskin\\OrchidRepeaterField\\Providers\\ServiceProvider"
+      ]
     }
   }
 }

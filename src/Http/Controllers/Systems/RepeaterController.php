@@ -2,69 +2,48 @@
 
 declare(strict_types=1);
 
-namespace Nakukryskin\OrchidRepeaterField\Handlers;
+namespace Nakukryskin\OrchidRepeaterField\Http\Controllers\Systems;
 
-use Orchid\Screen\Field;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\View\View;
-use Orchid\Widget\Widget;
+use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
+use Orchid\Platform\Http\Controllers\Controller;
 use Orchid\Screen\Builder;
+use Orchid\Screen\Field;
+use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Repository;
 
-/**
- * Modifying the fields to the correct data. Allow to send data to this widget.
- *
- * Class RepeaterHandler
- */
-abstract class RepeaterHandler extends Widget
+class RepeaterController extends Controller
 {
     //Template to generate repeater form block. Basically not needed to change.
     const BLOCK_TEMPLATE = 'platform::partials.fields._repeater_block';
+
+    /**
+     * @var Rows
+     */
+    protected $layout;
     /**
      * Repeater name which will be used as prefix.
      *
      * @var array|\Illuminate\Http\Request|string
      */
-    public $repeaterName;
+    protected $repeaterName;
 
-    public $blocksCount = 0;
+    protected $blocksCount = 0;
 
     /**
      * How much blocks we need generate at one request.
      *
      * @var array|\Illuminate\Http\Request|int|string
      */
-    public $num = 1;
+    protected $num = 0;
 
     /**
      * Values for the current repeater.
      *
      * @var array
      */
-    private $values = [];
-
-    public function __construct()
-    {
-        $this->repeaterName = request('repeater_name', null);
-        $this->blocksCount = (int) request('blocks', 0);
-
-        //Maybe we need add more than one block?
-        $num = request('num', 1);
-
-        if ($num > 0) {
-            $this->num = $num;
-        }
-
-        if (request()->has('values')) {
-            $this->values = (array) request()->get('values', []);
-        }
-    }
-
-    /**
-     * Return array of the fields.
-     *
-     * @return Field[]
-     */
-    abstract public function fields(): array;
+    protected $values = [];
 
     /**
      * Return rendered fields.
@@ -102,7 +81,7 @@ abstract class RepeaterHandler extends Widget
      */
     private function build(Repository $query, int $index = 0): View
     {
-        $fields = $this->fields();
+        $fields = $this->layout->fields();
 
         $form = new Builder($this->prepareFields($fields), $query);
 
@@ -162,6 +141,33 @@ abstract class RepeaterHandler extends Widget
      */
     private function getFormPrefix(int $index = 0)
     {
-        return $this->repeaterName.'['.($this->blocksCount + $index).']';
+        return $this->repeaterName . '[' . ($this->blocksCount + $index) . ']';
+    }
+
+    /**
+     * @param RepeaterRequest $request
+     *
+     * @return array
+     * @throws \Throwable
+     */
+    public function view(RepeaterRequest $request)
+    {
+        $layout = Crypt::decryptString($request->get('layout')) ?? null;
+
+        if (!class_exists($layout)) {
+            return [];
+        }
+
+        $this->layout = app($layout);
+
+        $this->repeaterName = $request->get('repeater_name');
+        $this->blocksCount = (int)request('blocks', 0);
+        $this->num = (int)$request->get('num', 0);
+
+        if ($request->has('values')) {
+            $this->values = (array)request()->get('values', []);
+        }
+
+        return $this->handler();
     }
 }
