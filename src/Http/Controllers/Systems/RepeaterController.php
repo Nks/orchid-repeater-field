@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Http\Controllers\Systems;
 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\View\View;
-use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
-use Orchid\Platform\Http\Controllers\Controller;
-use Orchid\Screen\Builder;
+use ReflectionMethod;
 use Orchid\Screen\Field;
-use Orchid\Screen\Layouts\Rows;
+use Illuminate\View\View;
+use Orchid\Screen\Builder;
 use Orchid\Screen\Repository;
+use Orchid\Screen\Layouts\Rows;
+use Illuminate\Support\Facades\Crypt;
+use Orchid\Platform\Http\Controllers\Controller;
+use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
 
 class RepeaterController extends Controller
 {
@@ -81,7 +82,13 @@ class RepeaterController extends Controller
      */
     private function build(Repository $query, int $index = 0): View
     {
-        $fields = $this->layout->fields();
+        $method = new ReflectionMethod($this->layout, 'fields');
+
+        if ($method->isProtected()) {
+            $method->setAccessible(true);
+        }
+
+        $fields = $method->invoke($this->layout);
 
         $form = new Builder($this->prepareFields($fields), $query);
 
@@ -109,11 +116,10 @@ class RepeaterController extends Controller
             if (is_array($field)) {
                 $result[] = $this->prepareFields($field);
             } elseif ($field instanceof Field) {
-                $name = $field->get('name');
+                //$name = $field->get('name');
                 //Uses for reorder
-                $field->attributes['data-repeater-name-key'] = $name;
-                $field->inlineAttributes[] = 'data-repeater-name-key';
-
+                //$field->attributes['data-repeater-name-key'] = $name;
+                //$field->inlineAttributes[] = 'data-repeater-name-key';
                 $result[] = $field;
             }
         }
