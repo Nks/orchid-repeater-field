@@ -107,4 +107,14 @@ class Repeater extends Field
             ->value([])
             ->set('template', 'repeater_' . Str::random(32));
     }
+
+    /**
+     * @param string $view
+     * @return Repeater
+     */
+    public function view(string $view): self
+    {
+        $this->view = $view;
+        return $this;
+    }
 }
