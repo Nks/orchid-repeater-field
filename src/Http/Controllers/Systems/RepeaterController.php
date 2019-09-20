@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Http\Controllers\Systems;
 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\View\View;
-use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
-use Orchid\Platform\Http\Controllers\Controller;
-use Orchid\Screen\Builder;
-use Orchid\Screen\Field;
-use Orchid\Screen\Layouts\Rows;
-use Orchid\Screen\Repository;
 use ReflectionMethod;
+use Orchid\Screen\Field;
+use Illuminate\View\View;
+use Orchid\Screen\Builder;
+use Orchid\Screen\Repository;
+use Orchid\Screen\Layouts\Rows;
+use Illuminate\Support\Facades\Crypt;
+use Orchid\Platform\Http\Controllers\Controller;
+use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
 
 class RepeaterController extends Controller
 {
@@ -160,7 +160,7 @@ class RepeaterController extends Controller
     {
         $layout = Crypt::decryptString($request->get('layout')) ?? null;
 
-        if (!class_exists($layout)) {
+        if (! class_exists($layout)) {
             return [];
         }
 

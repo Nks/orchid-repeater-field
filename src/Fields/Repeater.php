@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Fields;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Str;
 use Orchid\Screen\Field;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Orchid\Screen\Layouts\Rows;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * Creating repeater fields based on the fields which provided to the endpoint.
@@ -65,17 +65,16 @@ class Repeater extends Field
         'name',
     ];
 
-
     /**
      * @param  string  $layout
      * @return self
      */
     public function layout(string $layout): self
     {
-        if (!class_exists($layout) && !(app($layout) instanceof Rows)) {
+        if (! class_exists($layout) && ! (app($layout) instanceof Rows)) {
             throw new \InvalidArgumentException(
                 __('":class" does not exists or not supported. Only rows supported by repeater.', [
-                    'class' => $layout
+                    'class' => $layout,
                 ]));
         }
 
@@ -84,7 +83,7 @@ class Repeater extends Field
         $this->addBeforeRender(function () use ($layout) {
             $value = $this->get('value');
 
-            if (!is_iterable($value)) {
+            if (! is_iterable($value)) {
                 $value = Arr::wrap($value);
             }
 
@@ -115,6 +114,7 @@ class Repeater extends Field
     public function view(string $view): self
     {
         $this->view = $view;
+
         return $this;
     }
 }
