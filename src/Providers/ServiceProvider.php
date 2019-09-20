@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Providers;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Orchid\Platform\Dashboard;
 use View;
+use Orchid\Platform\Dashboard;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 /**
  * Class ServiceProvider.
@@ -55,8 +55,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
-
+        if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
             define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../../'));
         }
     }
@@ -134,7 +133,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function versionCompare()
     {
-        if (!version_compare(\Dashboard::version(), self::REQUIRED_ORCHID_PLATFORM_VERSION, '>=')) {
+        if (! version_compare(\Dashboard::version(), self::REQUIRED_ORCHID_PLATFORM_VERSION, '>=')) {
             throw new \Exception(sprintf(__('You cannot install %1$s because %1$s requires orchid/platform version %2$s or higher. You are running orchid/platform version %3$s.'),
                 self::class, self::REQUIRED_ORCHID_PLATFORM_VERSION, \Orchid\Platform\Dashboard::VERSION));
         }

@@ -28,7 +28,7 @@ class RepeaterRequest extends FormRequest
         return [
             'layout' => 'required',
             'repeater_name' => 'required',
-            'values' => ''
+            'values' => '',
         ];
     }
 }
