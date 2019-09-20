@@ -1,7 +1,11 @@
-## [Unreleased]
+# Changelog
 
+## 2.0.0
 
-1.0.0
+### Added
+- Support of platform 6.*
+
+## 1.0.0
 
 ### Added
 - Moved logic to a separate controller

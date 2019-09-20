@@ -3,12 +3,14 @@
 ![Orchid Platform Repeater Field](screenshots/repeater.jpg?raw=true)
 
 ## Brief
-This package adding basic support of repeater field to [Orchid RAD platform](https://github.com/orchidsoftware/platform).
+This package adding repeater fields support to [Orchid RAD platform](https://github.com/orchidsoftware/platform).
 
 ## Pre-requirements
 You must have installed and configured [Orchid Platform](https://github.com/orchidsoftware/platform)
 
-Version Support: 5.*
+Version Support: 6.*
+
+For 5 version use [1.0.0 tag](https://github.com/Nks/orchid-repeater-field/tree/1.0.0). 
 
 For 4.7.1 version use [0.0.8 tag](https://github.com/Nks/orchid-repeater-field/tree/0.0.8).
 

@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Http\Controllers\Systems;
 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\View\View;
-use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
-use Orchid\Platform\Http\Controllers\Controller;
-use Orchid\Screen\Builder;
+use ReflectionMethod;
 use Orchid\Screen\Field;
-use Orchid\Screen\Layouts\Rows;
+use Illuminate\View\View;
+use Orchid\Screen\Builder;
 use Orchid\Screen\Repository;
+use Orchid\Screen\Layouts\Rows;
+use Illuminate\Support\Facades\Crypt;
+use Orchid\Platform\Http\Controllers\Controller;
+use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
 
 class RepeaterController extends Controller
 {
@@ -74,14 +75,20 @@ class RepeaterController extends Controller
     /**
      * Build the form with the repeater fields.
      *
-     * @param Repository $query
-     * @param int $index
+     * @param  Repository  $query
+     * @param  int  $index
      * @return View
      * @throws \Throwable
      */
     private function build(Repository $query, int $index = 0): View
     {
-        $fields = $this->layout->fields();
+        $method = new ReflectionMethod($this->layout, 'fields');
+
+        if ($method->isProtected()) {
+            $method->setAccessible(true);
+        }
+
+        $fields = $method->invoke($this->layout);
 
         $form = new Builder($this->prepareFields($fields), $query);
 
@@ -97,7 +104,7 @@ class RepeaterController extends Controller
     /**
      * Prepare fields for the repeater.
      *
-     * @param array $fields
+     * @param  array  $fields
      * @return array
      */
     private function prepareFields(array $fields): array
@@ -109,11 +116,10 @@ class RepeaterController extends Controller
             if (is_array($field)) {
                 $result[] = $this->prepareFields($field);
             } elseif ($field instanceof Field) {
-                $name = $field->get('name');
+                //$name = $field->get('name');
                 //Uses for reorder
-                $field->attributes['data-repeater-name-key'] = $name;
-                $field->inlineAttributes[] = 'data-repeater-name-key';
-
+                //$field->attributes['data-repeater-name-key'] = $name;
+                //$field->inlineAttributes[] = 'data-repeater-name-key';
                 $result[] = $field;
             }
         }
@@ -124,8 +130,8 @@ class RepeaterController extends Controller
     /**
      * Preparing repository with full form prefix.
      *
-     * @param array $data
-     * @param int $index
+     * @param  array  $data
+     * @param  int  $index
      * @return Repository
      */
     private function buildRepository(array $data = [], int $index = 0): Repository
@@ -136,16 +142,16 @@ class RepeaterController extends Controller
     /**
      * Generate prefix for the form's inputs.
      *
-     * @param int $index
+     * @param  int  $index
      * @return string
      */
     private function getFormPrefix(int $index = 0)
     {
-        return $this->repeaterName . '[' . ($this->blocksCount + $index) . ']';
+        return $this->repeaterName.'['.($this->blocksCount + $index).']';
     }
 
     /**
-     * @param RepeaterRequest $request
+     * @param  RepeaterRequest  $request
      *
      * @return array
      * @throws \Throwable
@@ -154,18 +160,18 @@ class RepeaterController extends Controller
     {
         $layout = Crypt::decryptString($request->get('layout')) ?? null;
 
-        if (!class_exists($layout)) {
+        if (! class_exists($layout)) {
             return [];
         }
 
         $this->layout = app($layout);
 
         $this->repeaterName = $request->get('repeater_name');
-        $this->blocksCount = (int)request('blocks', 0);
-        $this->num = (int)$request->get('num', 0);
+        $this->blocksCount = (int) request('blocks', 0);
+        $this->num = (int) $request->get('num', 0);
 
         if ($request->has('values')) {
-            $this->values = (array)request()->get('values', []);
+            $this->values = (array) request()->get('values', []);
         }
 
         return $this->handler();
