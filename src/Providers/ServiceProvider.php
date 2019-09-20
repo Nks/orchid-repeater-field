@@ -16,7 +16,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Required version of orchid/platform package.
      */
-    const REQUIRED_ORCHID_PLATFORM_VERSION = '4.7.1';
+    const REQUIRED_ORCHID_PLATFORM_VERSION = '6.1.0';
 
     /**
      * @var Dashboard
