@@ -26,7 +26,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Perform post-registration booting of services.
      *
-     * @param Dashboard $dashboard
+     * @param  Dashboard  $dashboard
      * @return void
      * @throws \Exception
      */
@@ -34,7 +34,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->dashboard = $dashboard;
 
-        $this->loadViewsFrom(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views', 'platform');
+        $this->loadViewsFrom(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views', 'platform');
 
         $this->versionCompare()
             ->registerResources()
@@ -57,7 +57,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         if (!defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
 
-            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__ . '/../../'));
+            define('ORCHID_REPEATER_FIELD_PACKAGE_PATH', realpath(__DIR__.'/../../'));
         }
     }
 
@@ -94,7 +94,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         // Publishing the views.
         $this->publishes([
-            ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/views' => base_path('resources/views/vendor/platform/fields'),
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views' => base_path('resources/views/vendor/platform/fields'),
         ], 'repeater-field.views');
     }
 
@@ -105,7 +105,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerResources(): self
     {
-        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/public/');
+        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public/');
 
         View::composer('platform::app', function () {
             $this->dashboard
@@ -123,7 +123,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerTranslations(): self
     {
-        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/resources/lang/'));
+        $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/lang/'));
 
         return $this;
     }

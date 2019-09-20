@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Fields;
 
-use Orchid\Screen\Field;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Orchid\Screen\Layouts\Rows;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Orchid\Screen\Field;
+use Orchid\Screen\Layouts\Rows;
 
 /**
  * Creating repeater fields based on the fields which provided to the endpoint.
@@ -67,7 +67,7 @@ class Repeater extends Field
 
 
     /**
-     * @param string $layout
+     * @param  string  $layout
      * @return self
      */
     public function layout(string $layout): self
@@ -97,7 +97,7 @@ class Repeater extends Field
     /**
      * Creating an instance of the repeater field.
      *
-     * @param string $name
+     * @param  string  $name
      * @return Repeater
      */
     public static function make(string $name): self
@@ -105,11 +105,11 @@ class Repeater extends Field
         return (new static)->name($name)
             ->set('original_name', $name)
             ->value([])
-            ->set('template', 'repeater_' . Str::random(32));
+            ->set('template', 'repeater_'.Str::random(32));
     }
 
     /**
-     * @param string $view
+     * @param  string  $view
      * @return Repeater
      */
     public function view(string $view): self

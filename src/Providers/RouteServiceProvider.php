@@ -30,10 +30,10 @@ class RouteServiceProvider extends ServiceProvider
         /*
          * Systems
          */
-        Route::domain((string)config('platform.domain'))
+        Route::domain((string) config('platform.domain'))
             ->prefix(Dashboard::prefix('/systems'))
             ->as('platform.')
             ->middleware(config('platform.middleware.private'))
-            ->group(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/routes/systems.php'));
+            ->group(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/routes/systems.php'));
     }
 }
