@@ -64,12 +64,14 @@ For 4.7.1 version use [0.0.8 tag](https://github.com/Nks/orchid-repeater-field/t
 1. Simply start adding the `RepeaterField::make('repeater')` in your screen:
     Example:
     ```php
-        public function fields(): array
+        public function layout(): array
         {
             return [
-                RepeaterField::make('repeater')
-                    ->title('Repeater')
-                    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
+                Layout::rows([
+                    RepeaterField::make('repeater')
+                        ->title('Repeater')
+                        ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
+                ])
             ];
         }
     ```
