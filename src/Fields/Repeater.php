@@ -66,10 +66,10 @@ class Repeater extends Field
     ];
 
     /**
-     * @param  string  $layout
+     * @param Orchid\Screen\Layouts\Rows $layout
      * @return self
      */
-    public function layout(string $layout): self
+    public function layout($layout): self
     {
         if (! class_exists($layout) && ! (app($layout) instanceof Rows)) {
             throw new \InvalidArgumentException(
