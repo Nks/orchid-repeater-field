@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Fields;
 
-use Orchid\Screen\Field;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Orchid\Screen\Layouts\Rows;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Orchid\Screen\Field;
+use Orchid\Screen\Layouts\Rows;
 
 /**
  * Creating repeater fields based on the fields which provided to the endpoint.
