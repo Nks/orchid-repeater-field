@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Providers;
 
-use View;
-use Orchid\Platform\Dashboard;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Orchid\Platform\Dashboard;
+use View;
 
 /**
  * Class ServiceProvider.
