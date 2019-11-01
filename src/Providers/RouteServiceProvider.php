@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Providers;
 
-use Orchid\Platform\Dashboard;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
+use Orchid\Platform\Dashboard;
 
 class RouteServiceProvider extends ServiceProvider
 {
