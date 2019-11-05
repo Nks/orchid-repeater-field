@@ -118,9 +118,9 @@ class RepeaterController extends Controller
             } elseif ($field instanceof Field) {
                 $name = $field->get('name');
                 //Uses for reorder
-                $field->addBeforeRender(function() use ($name) {
-                   $this->inlineAttributes[] = 'data-repeater-name-key';
-                   $this->set('data-repeater-name-key', $name);
+                $field->addBeforeRender(function () use ($name) {
+                    $this->inlineAttributes[] = 'data-repeater-name-key';
+                    $this->set('data-repeater-name-key', $name);
                 });
                 $result[] = $field;
             }
