@@ -38,12 +38,14 @@
     }
 
     .card {
-      margin-top: 1rem;
+      margin-top: 0.40rem;
 
       &:first-child {
         margin-top: 0;
       }
       > .card-header {
+        padding: 0.50rem 1rem;
+
         .actions {
           span {
             &.action {
@@ -61,6 +63,11 @@
 
           margin: 0;
         }
+      }
+
+      > .card-body {
+        padding: 0.75rem;
+
       }
     }
   }
