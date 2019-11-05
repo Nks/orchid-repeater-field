@@ -3,3 +3,5 @@
 node_modules
 vendor
 config-local.json
+yarn.lock
+package-lock.json
