@@ -13,6 +13,7 @@ use Orchid\Screen\Field;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Repository;
 use ReflectionMethod;
+use ReflectionProperty;
 
 class RepeaterController extends Controller
 {
@@ -87,6 +88,15 @@ class RepeaterController extends Controller
         if ($method->isProtected()) {
             $method->setAccessible(true);
         }
+        
+        $queryData = new Repository(collect($query->toArray())->first(null, []));
+        $propQuery = new ReflectionProperty($this->layout, 'query');
+
+        if($propQuery->isProtected() || $propQuery->isPrivate()) {
+            $propQuery->setAccessible(true);
+        }
+
+        $propQuery->setValue($this->layout, $queryData);
 
         $fields = $method->invoke($this->layout);
 
