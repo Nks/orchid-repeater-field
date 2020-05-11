@@ -88,11 +88,11 @@ class RepeaterController extends Controller
         if ($method->isProtected()) {
             $method->setAccessible(true);
         }
-        
+
         $queryData = new Repository(collect($query->toArray())->first(null, []));
         $propQuery = new ReflectionProperty($this->layout, 'query');
 
-        if($propQuery->isProtected() || $propQuery->isPrivate()) {
+        if ($propQuery->isProtected() || $propQuery->isPrivate()) {
             $propQuery->setAccessible(true);
         }
 
