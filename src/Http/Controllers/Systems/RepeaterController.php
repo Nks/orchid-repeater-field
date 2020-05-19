@@ -13,6 +13,7 @@ use Orchid\Screen\Field;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Repository;
 use ReflectionMethod;
+use ReflectionProperty;
 
 class RepeaterController extends Controller
 {
@@ -88,6 +89,15 @@ class RepeaterController extends Controller
             $method->setAccessible(true);
         }
 
+        $queryData = new Repository(collect($query->toArray())->first(null, []));
+        $propQuery = new ReflectionProperty($this->layout, 'query');
+
+        if ($propQuery->isProtected() || $propQuery->isPrivate()) {
+            $propQuery->setAccessible(true);
+        }
+
+        $propQuery->setValue($this->layout, $queryData);
+
         $fields = $method->invoke($this->layout);
 
         $form = new Builder($this->prepareFields($fields), $query);
@@ -118,9 +128,9 @@ class RepeaterController extends Controller
             } elseif ($field instanceof Field) {
                 $name = $field->get('name');
                 //Uses for reorder
-                $field->addBeforeRender(function () use ($name) {
-                    $this->inlineAttributes[] = 'data-repeater-name-key';
-                    $this->set('data-repeater-name-key', $name);
+                $field->addBeforeRender(function () use ($name, $field) {
+                    $field->inlineAttributes[] = 'data-repeater-name-key';
+                    $field->set('data-repeater-name-key', $name);
                 });
                 $result[] = $field;
             }
