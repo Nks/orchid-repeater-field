@@ -10,6 +10,7 @@ use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
 use Orchid\Platform\Http\Controllers\Controller;
 use Orchid\Screen\Builder;
 use Orchid\Screen\Field;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Repository;
 use ReflectionMethod;
@@ -125,6 +126,8 @@ class RepeaterController extends Controller
             //Preparing group
             if (is_array($field)) {
                 $result[] = $this->prepareFields($field);
+            } elseif ($field instanceof Group) {
+                $result[] = Group::make($this->prepareFields($field->getGroup()));
             } elseif ($field instanceof Field) {
                 $name = $field->get('name');
                 //Uses for reorder
