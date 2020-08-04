@@ -80,7 +80,7 @@ class Repeater extends Field
 
         $this->set('layout', Crypt::encryptString($layout));
 
-        $this->addBeforeRender(function () use ($layout) {
+        $this->addBeforeRender(function () {
             $value = $this->get('value') ?? old($this->getOldName());
 
             if (! is_iterable($value)) {
