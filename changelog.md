@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.1
+- Fix issue with protected properties in the Field class
+
 ## 3.0.0
 - Support of platform 7.*
 - Fix issue with the `Group::make([])` by [@mavsan](https://github.com/mavsan)
