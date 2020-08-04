@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+- Support of platform 7.*
+- Fix issue with the `Group::make([])` by [@mavsan](https://github.com/mavsan)
+
 ## 2.0.0
 
 ### Added

@@ -8,7 +8,9 @@ This package adding repeater fields support to [Orchid RAD platform](https://git
 ## Pre-requirements
 You must have installed and configured [Orchid Platform](https://github.com/orchidsoftware/platform)
 
-Version Support: 6.*
+Version Support: .*
+
+For 6.* version use [2.0.5 tag](https://github.com/Nks/orchid-repeater-field/tree/2.0.5)
 
 For 5 version use [1.0.0 tag](https://github.com/Nks/orchid-repeater-field/tree/1.0.0). 
 
@@ -85,7 +87,7 @@ Repeater field also support required, max and min parameters. You can add these 
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
+    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class)
     ->required()
     ->min(10)
     ->max(20)
@@ -100,6 +102,6 @@ eg.
 ```php
 RepeaterField::make('repeater')
     ->title('Repeater')
-    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class),
+    ->layout(App\Http\Orchid\Layouts\Repeaters\RepeaterFields::class)
     ->button_label('Add new repeater field')
 ```
