@@ -29,14 +29,14 @@ class Repeater extends Field
      *
      * @var string
      */
-    public $view = 'platform::fields.repeater';
+    protected $view = 'platform::fields.repeater';
 
     /**
      * Required Attributes.
      *
      * @var array
      */
-    public $required = [
+    protected $required = [
         'name',
         'layout',
     ];
@@ -46,7 +46,7 @@ class Repeater extends Field
      *
      * @var array
      */
-    public $attributes = [
+    protected $attributes = [
         'class' => 'form-control',
         'original_name' => null,
         'template' => null,
@@ -58,7 +58,7 @@ class Repeater extends Field
      *
      * @var array
      */
-    public $inlineAttributes = [
+    protected $inlineAttributes = [
         'required',
         'min',
         'max',
@@ -80,7 +80,7 @@ class Repeater extends Field
 
         $this->set('layout', Crypt::encryptString($layout));
 
-        $this->addBeforeRender(function () use ($layout) {
+        $this->addBeforeRender(function () {
             $value = $this->get('value') ?? old($this->getOldName());
 
             if (! is_iterable($value)) {
