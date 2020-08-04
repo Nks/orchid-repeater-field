@@ -159,7 +159,7 @@ class RepeaterController extends Controller
      */
     private function getFormPrefix(int $index = 0)
     {
-        return $this->repeaterName . '[' . ($this->blocksCount + $index) . ']';
+        return $this->repeaterName.'['.($this->blocksCount + $index).']';
     }
 
     /**
@@ -172,18 +172,18 @@ class RepeaterController extends Controller
     {
         $layout = Crypt::decryptString($request->get('layout')) ?? null;
 
-        if (!class_exists($layout)) {
+        if (! class_exists($layout)) {
             return [];
         }
 
         $this->layout = app($layout);
 
         $this->repeaterName = $request->get('repeater_name');
-        $this->blocksCount = (int)request('blocks', 0);
-        $this->num = (int)$request->get('num', 0);
+        $this->blocksCount = (int) request('blocks', 0);
+        $this->num = (int) $request->get('num', 0);
 
         if ($request->has('values')) {
-            $this->values = (array)request()->get('values', []);
+            $this->values = (array) request()->get('values', []);
         }
 
         return $this->handler();
