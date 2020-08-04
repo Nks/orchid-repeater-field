@@ -77,26 +77,19 @@ class RepeaterController extends Controller
     /**
      * Build the form with the repeater fields.
      *
-     * @param  Repository  $query
-     * @param  int  $index
+     * @param Repository $query
+     * @param int $index
      * @return View
      * @throws \Throwable
      */
     private function build(Repository $query, int $index = 0): View
     {
         $method = new ReflectionMethod($this->layout, 'fields');
-
-        if ($method->isProtected()) {
-            $method->setAccessible(true);
-        }
+        $method->setAccessible(true);
 
         $queryData = new Repository(collect($query->toArray())->first(null, []));
         $propQuery = new ReflectionProperty($this->layout, 'query');
-
-        if ($propQuery->isProtected() || $propQuery->isPrivate()) {
-            $propQuery->setAccessible(true);
-        }
-
+        $propQuery->setAccessible(true);
         $propQuery->setValue($this->layout, $queryData);
 
         $fields = $method->invoke($this->layout);
@@ -115,7 +108,7 @@ class RepeaterController extends Controller
     /**
      * Prepare fields for the repeater.
      *
-     * @param  array  $fields
+     * @param array $fields
      * @return array
      */
     private function prepareFields(array $fields): array
@@ -132,7 +125,11 @@ class RepeaterController extends Controller
                 $name = $field->get('name');
                 //Uses for reorder
                 $field->addBeforeRender(function () use ($name, $field) {
-                    $field->inlineAttributes[] = 'data-repeater-name-key';
+                    $propInlineAttributes = new ReflectionProperty($field, 'inlineAttributes');
+                    $propInlineAttributes->setAccessible(true);
+                    $inlineAttributes = $propInlineAttributes->getValue($field);
+                    $inlineAttributes[] = 'data-repeater-name-key';
+                    $propInlineAttributes->setValue($field, $inlineAttributes);
                     $field->set('data-repeater-name-key', $name);
                 });
                 $result[] = $field;
@@ -145,8 +142,8 @@ class RepeaterController extends Controller
     /**
      * Preparing repository with full form prefix.
      *
-     * @param  array  $data
-     * @param  int  $index
+     * @param array $data
+     * @param int $index
      * @return Repository
      */
     private function buildRepository(array $data = [], int $index = 0): Repository
@@ -157,16 +154,16 @@ class RepeaterController extends Controller
     /**
      * Generate prefix for the form's inputs.
      *
-     * @param  int  $index
+     * @param int $index
      * @return string
      */
     private function getFormPrefix(int $index = 0)
     {
-        return $this->repeaterName.'['.($this->blocksCount + $index).']';
+        return $this->repeaterName . '[' . ($this->blocksCount + $index) . ']';
     }
 
     /**
-     * @param  RepeaterRequest  $request
+     * @param RepeaterRequest $request
      *
      * @return array
      * @throws \Throwable
@@ -175,18 +172,18 @@ class RepeaterController extends Controller
     {
         $layout = Crypt::decryptString($request->get('layout')) ?? null;
 
-        if (! class_exists($layout)) {
+        if (!class_exists($layout)) {
             return [];
         }
 
         $this->layout = app($layout);
 
         $this->repeaterName = $request->get('repeater_name');
-        $this->blocksCount = (int) request('blocks', 0);
-        $this->num = (int) $request->get('num', 0);
+        $this->blocksCount = (int)request('blocks', 0);
+        $this->num = (int)$request->get('num', 0);
 
         if ($request->has('values')) {
-            $this->values = (array) request()->get('values', []);
+            $this->values = (array)request()->get('values', []);
         }
 
         return $this->handler();
