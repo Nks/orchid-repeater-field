@@ -99,7 +99,7 @@ class Repeater extends Field
      * @param  string  $name
      * @return Repeater
      */
-    public static function make(string $name = null): self
+    public static function make(string $name = null): Field
     {
         return (new static)->name($name)
             ->set('original_name', $name)
