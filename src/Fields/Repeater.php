@@ -51,7 +51,7 @@ class Repeater extends Field
         'original_name' => null,
         'template' => null,
         'button_label' => null,
-        'ajax_data' => []
+        'ajax_data' => [],
     ];
 
     /**
@@ -64,7 +64,7 @@ class Repeater extends Field
         'min',
         'max',
         'name',
-        'ajax_data'
+        'ajax_data',
     ];
 
     /**
@@ -123,18 +123,18 @@ class Repeater extends Field
 
     /**
      * Set the ajax_data passing to the component with each request.
-     * If callback used it should return the array of the values passed to the ajax_data
+     * If callback used it should return the array of the values passed to the ajax_data.
      *
      * @param callable|array $value
      * @return $this
      */
     public function ajaxData($value): self
     {
-        if(is_callable($value)) {
+        if (is_callable($value)) {
             $value = call_user_func($value);
         }
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             $this->set('ajax_data', $value);
         }
 

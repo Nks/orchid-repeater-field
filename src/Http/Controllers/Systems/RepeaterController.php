@@ -49,7 +49,7 @@ class RepeaterController extends Controller
     protected $values = [];
 
     /**
-     * Ajax values for the current repeater
+     * Ajax values for the current repeater.
      *
      * @var array
      */
