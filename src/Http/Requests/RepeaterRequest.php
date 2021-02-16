@@ -29,6 +29,7 @@ class RepeaterRequest extends FormRequest
             'layout' => 'required',
             'repeater_name' => 'required',
             'values' => '',
+            'repeater_data' => 'nullable|array',
         ];
     }
 }
