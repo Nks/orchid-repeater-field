@@ -49,6 +49,13 @@ class RepeaterController extends Controller
     protected $values = [];
 
     /**
+     * Ajax values for the current repeater
+     *
+     * @var array
+     */
+    protected $repeaterData = [];
+
+    /**
      * Return rendered fields.
      *
      * @return array
@@ -148,7 +155,7 @@ class RepeaterController extends Controller
      */
     private function buildRepository(array $data = [], int $index = 0): Repository
     {
-        return new Repository([$this->getFormPrefix($index) => $data]);
+        return new Repository([$this->getFormPrefix($index) => array_merge($data, ['_repeater_data' => $this->repeaterData])]);
     }
 
     /**
@@ -181,6 +188,7 @@ class RepeaterController extends Controller
         $this->repeaterName = $request->get('repeater_name');
         $this->blocksCount = (int) request('blocks', 0);
         $this->num = (int) $request->get('num', 0);
+        $this->repeaterData = $request->get('repeater_data', []);
 
         if ($request->has('values')) {
             $this->values = (array) request()->get('values', []);

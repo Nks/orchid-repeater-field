@@ -60,6 +60,7 @@ export default class extends Controller {
 
         const self = this;
         const fieldName = this.repeaterFieldTarget.name;
+        const repeater_data = JSON.parse(this.data.get('ajax-data'))
         const values = JSON.parse(this.data.get('value'));
 
         this.contentTarget.classList.add('loading');
@@ -68,6 +69,7 @@ export default class extends Controller {
             values: values,
             repeater_name: fieldName,
             layout: this.data.get('layout'),
+            repeater_data
         }).then((r) => {
             if (!this.template && r.data.template) {
                 const element = document.createElement('template');
@@ -182,7 +184,7 @@ export default class extends Controller {
 
         const blocksCount = this.blocksTarget.querySelectorAll(':scope > .repeater-item').length;
         const num = event.detail.blocksNum || 1;
-        const values = JSON.parse(this.data.get('value'));
+        const repeater_data = JSON.parse(this.data.get('ajax-data'))
 
         if (this.options.max && blocksCount >= this.options.max) {
             alert('Maximum number of blocks reached');
@@ -193,8 +195,8 @@ export default class extends Controller {
             layout: this.data.get('layout'),
             repeater_name: this.repeaterFieldTarget.name,
             blocks: blocksCount,
-            num: num,
-            values: values,
+            num,
+            repeater_data
         }).then((r) => {
             if (r.data.fields) {
                 r.data.fields.forEach((content, index) => {
