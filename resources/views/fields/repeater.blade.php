@@ -5,6 +5,7 @@
          data-fields--repeater-template="{{ $template }}"
          data-fields--repeater-layout="{{ $layout }}"
          data-fields--repeater-value="{{ json_encode($value) }}"
+         data-fields--repeater-ajax-data='@json($ajax_data)'
          data-fields--repeater-url="{{route('platform.systems.repeater')}}">
         <input type="hidden" name="{{ $name }}" data-target="fields--repeater.repeaterField" value=""/>
         <div class="row">
