@@ -120,7 +120,6 @@ class Repeater extends Field
         return $this;
     }
 
-
     /**
      * Set the ajax_data passing to the component with each request.
      * If callback used it should return the array of the values passed to the ajax_data.
