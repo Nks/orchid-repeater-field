@@ -182,6 +182,7 @@ export default class extends Controller {
 
         const blocksCount = this.blocksTarget.querySelectorAll(':scope > .repeater-item').length;
         const num = event.detail.blocksNum || 1;
+        const values = JSON.parse(this.data.get('value'));
 
         if (this.options.max && blocksCount >= this.options.max) {
             alert('Maximum number of blocks reached');
@@ -193,6 +194,7 @@ export default class extends Controller {
             repeater_name: this.repeaterFieldTarget.name,
             blocks: blocksCount,
             num: num,
+            values: values,
         }).then((r) => {
             if (r.data.fields) {
                 r.data.fields.forEach((content, index) => {
