@@ -21,6 +21,7 @@ use Orchid\Screen\Layouts\Rows;
  * @method $this help(string $value = null)
  * @method $this name($value = true)
  * @method $this button_label(string $value = null)
+ * @method $this title(string $value = null)
  */
 class Repeater extends Field
 {
@@ -51,7 +52,7 @@ class Repeater extends Field
         'original_name' => null,
         'template' => null,
         'button_label' => null,
-        'ajax_data' => [],
+        'ajax_data' => '[]',
     ];
 
     /**
@@ -134,7 +135,7 @@ class Repeater extends Field
         }
 
         if (is_array($value)) {
-            $this->set('ajax_data', $value);
+            $this->set('ajax_data', json_encode($value, JSON_THROW_ON_ERROR));
         }
 
         return $this;
