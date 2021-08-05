@@ -1,16 +1,16 @@
 @component($typeForm,get_defined_vars())
     <div class="repeater"
          data-controller="fields--repeater"
-         data-fields--repeater-options="{{ json_encode($attributes) }}"
+         data-fields--repeater-options="{{ json_encode($attributes->getAttributes()) }}"
          data-fields--repeater-template="{{ $template }}"
          data-fields--repeater-layout="{{ $layout }}"
          data-fields--repeater-value="{{ json_encode($value) }}"
-         data-fields--repeater-ajax-data='@json($ajax_data)'
+         data-fields--repeater-ajax-data='{{ $ajax_data }}'
          data-fields--repeater-url="{{route('platform.systems.repeater')}}">
         <input type="hidden" name="{{ $name }}" data-target="fields--repeater.repeaterField" value=""/>
         <div class="row">
             <div class="col-md-12">
-                <section class="content b wrapper-xs mb-2 empty loading" data-target="fields--repeater.content">
+                <section class="content wrapper-xs mb-2 empty loading" data-target="fields--repeater.content">
                     <div class="no-value-message">
                         {{ __('Click the ":button_label" button below to start adding the items.', [
                             'button_label' => ($button_label ?? __('Add block'))
@@ -30,8 +30,6 @@
             </div>
         </div>
 
-        @push('scripts')
-            @include('platform::partials.fields._repeater_field_template')
-        @endpush
+        @include('platform::partials.fields._repeater_field_template')
     </div>
 @endcomponent
