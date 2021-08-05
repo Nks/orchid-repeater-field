@@ -99,7 +99,7 @@ class Repeater extends Field
     /**
      * Creating an instance of the repeater field.
      *
-     * @param  string  $name
+     * @param  string|null  $name
      * @return Repeater
      */
     public static function make(string $name = null): self
@@ -127,6 +127,7 @@ class Repeater extends Field
      *
      * @param callable|array $value
      * @return $this
+     * @throws \JsonException
      */
     public function ajaxData($value): self
     {

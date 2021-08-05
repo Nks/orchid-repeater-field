@@ -10,7 +10,7 @@
         <input type="hidden" name="{{ $name }}" data-target="fields--repeater.repeaterField" value=""/>
         <div class="row">
             <div class="col-md-12">
-                <section class="content b wrapper-xs mb-2 empty loading" data-target="fields--repeater.content">
+                <section class="content wrapper-xs mb-2 empty loading" data-target="fields--repeater.content">
                     <div class="no-value-message">
                         {{ __('Click the ":button_label" button below to start adding the items.', [
                             'button_label' => ($button_label ?? __('Add block'))
