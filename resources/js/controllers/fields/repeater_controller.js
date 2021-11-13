@@ -18,6 +18,10 @@ export default class extends Controller {
         'repeaterField',
     ];
 
+    static get shouldLoad() {
+        return true;
+    }
+
     template;
 
     options = {
