@@ -104,12 +104,14 @@ class ServiceProvider extends BaseServiceProvider
      */
     private function registerResources(): self
     {
-        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public/');
-
+        $this->publishes([
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH . '/public' => public_path('vendor/repeater'),
+        ], 'public');
+        
         View::composer('platform::app', function () {
             $this->dashboard
-                ->registerResource('scripts', orchid_mix('/js/repeater.js', 'repeater'))
-                ->registerResource('stylesheets', orchid_mix('/css/repeater.css', 'repeater'));
+                ->registerResource('scripts', mix('/js/repeater.js', 'repeater'))
+                ->registerResource('stylesheets', mix('/css/repeater.css', 'repeater'));
         });
 
         return $this;
