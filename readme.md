@@ -1,6 +1,6 @@
 # Orchid Platform Repeater Field
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
+[![Support Ukraine Badge](https://bit.ly/support-ukraine-now)](https://supportukrainenow.org)
 
 ![Orchid Platform Repeater Field](screenshots/repeater.jpg?raw=true)
 
@@ -17,7 +17,7 @@ You must have installed and configured [Orchid Platform](https://github.com/orch
 
 Version Support: .*
 
-For ^13.0.1 use [^13.0.0 tag](https://github.com/Nks/orchid-repeater-field/tree/3.0.0) and newer.
+For ^13.0.1 use [^13.0.0 tag](https://github.com/Nks/orchid-repeater-field/tree/13.0.0) and newer.
 
 **Older versions do not have support for most of the current functionality.**
 

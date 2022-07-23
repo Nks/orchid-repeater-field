@@ -10,6 +10,9 @@
         "production": "mix --production",
         "eslint": "./node_modules/.bin/eslint resources/js/ --fix"
     },
+    "engines": {
+        "node": "^16"
+    },
     "dependencies": {
         "@babel/core": "^7.0.0",
         "@babel/eslint-parser": "^7.18.9",
@@ -26,7 +29,7 @@
         "open-color": "^1.7.0",
         "postcss": "^8.2.15",
         "sortablejs": "^1.15.0",
-        "squirrelly": "^7.5.0",
+        "squirrelly": "^8.0.8",
         "vue-template-compiler": "^2.6.12",
         "webpack": "^5.60.0",
         "webpack-cli": "^4.9.1"
