@@ -44,7 +44,6 @@ class RepeaterController extends Controller
 
     /**
      * Return rendered fields.
-     *
      */
     final public function handler(): array
     {
@@ -141,7 +140,6 @@ class RepeaterController extends Controller
         $this->blocksCount = $request->get('blocks', 0);
         $this->num = $request->get('num', 0);
         $this->repeaterData = $request->get('repeater_data', []);
-
 
         if (! is_null($this->repeaterData) && ! in_array(AjaxDataAccess::class, class_uses($this->layout), true)) {
             throw new UnsupportedAjaxDataLayout(get_class($this->layout));
