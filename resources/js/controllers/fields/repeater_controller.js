@@ -1,9 +1,8 @@
 import Sortable from 'sortablejs';
 import axios from 'axios';
+import * as Sqrl from 'squirrelly';
 import ApplicationController
     from '~orchid/js/controllers/application_controller';
-
-const sqrl = require('squirrelly');
 
 export default class extends ApplicationController {
     static targets = [
@@ -42,10 +41,11 @@ export default class extends ApplicationController {
 
     prepareTemplate() {
         const templateElement = document.getElementById(this.data.get('template'));
-        sqrl.autoEscaping(false);
 
         if (templateElement) {
-            this.template = sqrl.Compile(templateElement.innerHTML);
+            const config = Sqrl.defaultConfig;
+            config.autoEscape = false;
+            this.template = Sqrl.compile(templateElement.innerHTML, config);
         }
 
         return this;
@@ -71,7 +71,10 @@ export default class extends ApplicationController {
 
                 const template = element.content.firstChild;
 
-                this.template = sqrl.Compile(template.innerHTML);
+                const config = Sqrl.defaultConfig;
+                config.autoEscape = false;
+
+                this.template = Sqrl.compile(template.innerHTML, config);
             }
 
             if (!this.template) {
