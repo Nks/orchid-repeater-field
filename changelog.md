@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.0.0
+- Added support ^13 version of Orchid. 
+
 ## 3.0.1
 - Fix issue with protected properties in the Field class
 

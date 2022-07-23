@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Traits;
 
+use Illuminate\Support\Collection;
+
 trait AjaxDataAccess
 {
-    public function getAjaxData(): ?array
+    public function getAjaxData(): Collection
     {
-        return $this->query->get('_repeater_data', []);
+        $repeaterData = $this->query->get('_repeater_data');
+
+        return collect($repeaterData ?? []);
     }
 }

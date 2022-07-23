@@ -13,31 +13,15 @@ use View;
  */
 class ServiceProvider extends BaseServiceProvider
 {
-    /**
-     * Required version of orchid/platform package.
-     */
-    const REQUIRED_ORCHID_PLATFORM_VERSION = '6.1.0';
+    protected Dashboard $dashboard;
 
-    /**
-     * @var Dashboard
-     */
-    protected $dashboard;
-
-    /**
-     * Perform post-registration booting of services.
-     *
-     * @param  Dashboard  $dashboard
-     * @return void
-     * @throws \Exception
-     */
     public function boot(Dashboard $dashboard)
     {
         $this->dashboard = $dashboard;
 
         $this->loadViewsFrom(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views', 'platform');
 
-        $this->versionCompare()
-            ->registerResources()
+        $this->registerResources()
             ->registerProviders()
             ->registerTranslations();
 
@@ -47,12 +31,6 @@ class ServiceProvider extends BaseServiceProvider
         }
     }
 
-    /**
-     * Register any package services.
-     *
-     * @return void
-     * @throws \Exception
-     */
     public function register()
     {
         if (! defined('ORCHID_REPEATER_FIELD_PACKAGE_PATH')) {
@@ -60,9 +38,6 @@ class ServiceProvider extends BaseServiceProvider
         }
     }
 
-    /**
-     * Register provider.
-     */
     public function registerProviders(): self
     {
         foreach ($this->provides() as $provide) {
@@ -84,60 +59,30 @@ class ServiceProvider extends BaseServiceProvider
         ];
     }
 
-    /**
-     * Console-specific booting.
-     *
-     * @return void
-     */
     protected function bootForConsole()
     {
-        // Publishing the views.
         $this->publishes([
             ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/views' => base_path('resources/views/vendor/platform'),
         ], 'repeater-field.views');
     }
 
-    /**
-     * Registering resources.
-     *
-     * @throws \Exception
-     */
     private function registerResources(): self
     {
-        $this->dashboard->addPublicDirectory('repeater', ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public/');
+        $this->publishes([
+            ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/public' => public_path('vendor/nakukryskin/orchid-repeater-field'),
+        ], ['repeater-field.assets', 'laravel-assets']);
 
         View::composer('platform::app', function () {
             $this->dashboard
-                ->registerResource('scripts', orchid_mix('/js/repeater.js', 'repeater'))
-                ->registerResource('stylesheets', orchid_mix('/css/repeater.css', 'repeater'));
+                ->registerResource('scripts', mix('/js/repeater.js', 'vendor/nakukryskin/orchid-repeater-field'))
+                ->registerResource('stylesheets', mix('/css/repeater.css', 'vendor/nakukryskin/orchid-repeater-field'));
         });
 
         return $this;
     }
 
-    /**
-     * Registering languages.
-     *
-     * @return ServiceProvider
-     */
-    private function registerTranslations(): self
+    private function registerTranslations(): void
     {
         $this->loadJsonTranslationsFrom(realpath(ORCHID_REPEATER_FIELD_PACKAGE_PATH.'/resources/lang/'));
-
-        return $this;
-    }
-
-    /**
-     * Check that the package has correct orchid platform version.
-     * @throws \Exception
-     */
-    private function versionCompare()
-    {
-        if (! version_compare(\Dashboard::version(), self::REQUIRED_ORCHID_PLATFORM_VERSION, '>=')) {
-            throw new \Exception(sprintf(__('You cannot install %1$s because %1$s requires orchid/platform version %2$s or higher. You are running orchid/platform version %3$s.'),
-                self::class, self::REQUIRED_ORCHID_PLATFORM_VERSION, \Orchid\Platform\Dashboard::VERSION));
-        }
-
-        return $this;
     }
 }

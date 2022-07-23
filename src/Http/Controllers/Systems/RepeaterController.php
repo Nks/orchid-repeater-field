@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Nakukryskin\OrchidRepeaterField\Http\Controllers\Systems;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\View\View;
+use Nakukryskin\OrchidRepeaterField\Exceptions\UnsupportedAjaxDataLayout;
+use Nakukryskin\OrchidRepeaterField\Exceptions\WrongLayoutPassed;
 use Nakukryskin\OrchidRepeaterField\Http\Requests\RepeaterRequest;
+use Nakukryskin\OrchidRepeaterField\Traits\AjaxDataAccess;
 use Orchid\Platform\Http\Controllers\Controller;
 use Orchid\Screen\Builder;
 use Orchid\Screen\Field;
@@ -18,54 +21,35 @@ use ReflectionProperty;
 
 class RepeaterController extends Controller
 {
-    //Template to generate repeater form block. Basically not needed to change.
     const BLOCK_TEMPLATE = 'platform::partials.fields._repeater_block';
 
-    /**
-     * @var Rows
-     */
-    protected $layout;
-    /**
-     * Repeater name which will be used as prefix.
-     *
-     * @var array|\Illuminate\Http\Request|string
-     */
-    protected $repeaterName;
-
-    protected $blocksCount = 0;
+    protected Rows $layout;
+    protected string $repeaterName;
+    protected int $blocksCount = 0;
 
     /**
-     * How much blocks we need generate at one request.
-     *
-     * @var array|\Illuminate\Http\Request|int|string
+     * How many blocks we need generate at one request.
      */
-    protected $num = 0;
+    protected \Illuminate\Http\Request|string|array|int $num = 0;
 
     /**
      * Values for the current repeater.
-     *
-     * @var array
      */
-    protected $values = [];
+    protected array $values = [];
 
     /**
      * Ajax values for the current repeater.
-     *
-     * @var array
      */
-    protected $repeaterData = [];
+    protected ?array $repeaterData = null;
 
     /**
      * Return rendered fields.
-     *
-     * @return array
-     * @throws \Throwable
      */
-    final public function handler()
+    final public function handler(): array
     {
         $result = [
             'template' => view('platform::partials.fields._repeater_field_template')->render(),
-            'fields' => [],
+            'fields'   => [],
         ];
 
         if ($this->values) {
@@ -81,14 +65,6 @@ class RepeaterController extends Controller
         return $result;
     }
 
-    /**
-     * Build the form with the repeater fields.
-     *
-     * @param Repository $query
-     * @param int $index
-     * @return View
-     * @throws \Throwable
-     */
     private function build(Repository $query, int $index = 0): View
     {
         $method = new ReflectionMethod($this->layout, 'fields');
@@ -112,25 +88,18 @@ class RepeaterController extends Controller
         ]);
     }
 
-    /**
-     * Prepare fields for the repeater.
-     *
-     * @param array $fields
-     * @return array
-     */
     private function prepareFields(array $fields): array
     {
         $result = [];
 
         foreach ($fields as $field) {
-            //Preparing group
             if (is_array($field)) {
                 $result[] = $this->prepareFields($field);
             } elseif ($field instanceof Group) {
                 $result[] = Group::make($this->prepareFields($field->getGroup()));
             } elseif ($field instanceof Field) {
                 $name = $field->get('name');
-                //Uses for reorder
+
                 $field->addBeforeRender(function () use ($name, $field) {
                     $propInlineAttributes = new ReflectionProperty($field, 'inlineAttributes');
                     $propInlineAttributes->setAccessible(true);
@@ -139,6 +108,7 @@ class RepeaterController extends Controller
                     $propInlineAttributes->setValue($field, $inlineAttributes);
                     $field->set('data-repeater-name-key', $name);
                 });
+
                 $result[] = $field;
             }
         }
@@ -146,52 +116,37 @@ class RepeaterController extends Controller
         return $result;
     }
 
-    /**
-     * Preparing repository with full form prefix.
-     *
-     * @param array $data
-     * @param int $index
-     * @return Repository
-     */
     private function buildRepository(array $data = [], int $index = 0): Repository
     {
-        return new Repository([$this->getFormPrefix($index) => array_merge($data, ['_repeater_data' => $this->repeaterData])]);
+        return new Repository([
+            $this->getFormPrefix($index) => array_merge($data, ['_repeater_data' => $this->repeaterData]),
+        ]);
     }
 
-    /**
-     * Generate prefix for the form's inputs.
-     *
-     * @param int $index
-     * @return string
-     */
-    private function getFormPrefix(int $index = 0)
+    private function getFormPrefix(int $index = 0): string
     {
         return $this->repeaterName.'['.($this->blocksCount + $index).']';
     }
 
-    /**
-     * @param RepeaterRequest $request
-     *
-     * @return array
-     * @throws \Throwable
-     */
-    public function view(RepeaterRequest $request)
+    public function view(RepeaterRequest $request): array
     {
         $layout = Crypt::decryptString($request->get('layout')) ?? null;
 
-        if (! class_exists($layout)) {
-            return [];
-        }
+        throw_if(! class_exists($layout), new WrongLayoutPassed($layout));
 
         $this->layout = app($layout);
 
         $this->repeaterName = $request->get('repeater_name');
-        $this->blocksCount = (int) request('blocks', 0);
-        $this->num = (int) $request->get('num', 0);
+        $this->blocksCount = $request->get('blocks', 0);
+        $this->num = $request->get('num', 0);
         $this->repeaterData = $request->get('repeater_data', []);
 
+        if (! is_null($this->repeaterData) && ! in_array(AjaxDataAccess::class, class_uses($this->layout), true)) {
+            throw new UnsupportedAjaxDataLayout(get_class($this->layout));
+        }
+
         if ($request->has('values')) {
-            $this->values = (array) request()->get('values', []);
+            $this->values = $request->get('values');
         }
 
         return $this->handler();
