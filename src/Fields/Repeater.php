@@ -11,55 +11,31 @@ use Orchid\Screen\Field;
 use Orchid\Screen\Layouts\Rows;
 
 /**
- * Creating repeater fields based on the fields which provided to the endpoint.
- *
- * Class RepeaterField
- *
  * @method $this min($value = null)
  * @method $this max($value = null)
  * @method $this required($value = true)
  * @method $this help(string $value = null)
  * @method $this name($value = true)
- * @method $this button_label(string $value = null)
  * @method $this title(string $value = null)
  */
 class Repeater extends Field
 {
-    /**
-     * View name.
-     *
-     * @var string
-     */
     protected $view = 'platform::fields.repeater';
 
-    /**
-     * Required Attributes.
-     *
-     * @var array
-     */
     protected $required = [
         'name',
         'layout',
     ];
 
-    /**
-     * Default attributes value.
-     *
-     * @var array
-     */
     protected $attributes = [
-        'class' => 'form-control',
-        'original_name' => null,
-        'template' => null,
-        'button_label' => null,
-        'ajax_data' => '[]',
+        'class'                  => 'form-control',
+        'original_name'          => null,
+        'template'               => null,
+        'button_label'           => null,
+        'ajax_data'              => null,
+        'confirmDeleteBlockText' => null,
     ];
 
-    /**
-     * Attributes available for a particular tag.
-     *
-     * @var array
-     */
     protected $inlineAttributes = [
         'required',
         'min',
@@ -68,10 +44,6 @@ class Repeater extends Field
         'ajax_data',
     ];
 
-    /**
-     * @param  string  $layout
-     * @return self
-     */
     public function layout(string $layout): self
     {
         if (! class_exists($layout) && ! (app($layout) instanceof Rows)) {
@@ -96,24 +68,15 @@ class Repeater extends Field
         return $this;
     }
 
-    /**
-     * Creating an instance of the repeater field.
-     *
-     * @param  string|null  $name
-     * @return Repeater
-     */
     public static function make(string $name = null): self
     {
         return (new static)->name($name)
             ->set('original_name', $name)
             ->value([])
-            ->set('template', 'repeater_'.Str::random(32));
+            ->set('template', 'repeater_'.Str::random(32))
+        ;
     }
 
-    /**
-     * @param  string  $view
-     * @return Repeater
-     */
     public function view(string $view): self
     {
         $this->view = $view;
@@ -121,15 +84,7 @@ class Repeater extends Field
         return $this;
     }
 
-    /**
-     * Set the ajax_data passing to the component with each request.
-     * If callback used it should return the array of the values passed to the ajax_data.
-     *
-     * @param callable|array $value
-     * @return $this
-     * @throws \JsonException
-     */
-    public function ajaxData($value): self
+    public function ajaxData(callable|array $value): self
     {
         if (is_callable($value)) {
             $value = call_user_func($value);
@@ -140,5 +95,15 @@ class Repeater extends Field
         }
 
         return $this;
+    }
+
+    public function confirmText(string $confirmText): self
+    {
+        return $this->set('confirmDeleteBlockText', $confirmText);
+    }
+
+    public function buttonLabel(string $label): self
+    {
+        return $this->set('buttonLabel', $label);
     }
 }

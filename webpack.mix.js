@@ -1,20 +1,32 @@
-let mix = require('laravel-mix');
+const path = require('path')
+const mix = require('laravel-mix');
 
 let webpackConfig = {
-    resolve: {
-        alias: {
-            'orchid': path.resolve(`${__dirname}/../../../`, 'vendor/orchid'),
-        },
+  resolve: {
+    alias: {
+      '~orchid': path.resolve(`${__dirname}`, 'vendor/orchid/platform/resources'),
     },
+  },
 };
 
 if (mix.inProduction()) {
-    mix.version();
+  mix.version();
+
+  mix.options({
+    clearConsole: true,
+    terser: {
+      terserOptions: {
+        compress: {
+          drop_console: true,
+        },
+      },
+    },
+  });
 }
 
 mix.webpackConfig(webpackConfig);
 
-mix
-    .sass('resources/sass/app.scss', 'css/repeater.css')
-    .js('resources/js/app.js', 'js/repeater.js')
-    .setPublicPath('public');
+mix.sass('resources/sass/app.scss', 'css/repeater.css').
+  js('resources/js/app.js', 'js/repeater.js').
+  setPublicPath('public').
+  version();

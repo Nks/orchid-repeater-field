@@ -2,6 +2,4 @@
 .DS_Store
 node_modules
 vendor
-config-local.json
-yarn.lock
-package-lock.json
+.php-cs-fixer.cache

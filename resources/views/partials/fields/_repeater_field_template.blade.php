@@ -2,7 +2,9 @@
     <div class="card repeater-item" data-sort="@{{block_key}}">
         <div class="card-header">
             <h5 class="actions">
-                <span class="action card-handle icon-size-fullscreen" data-parent-container-key="@{{name}}"></span>
+                <span class="action card-handle icon-size-fullscreen" data-parent-container-key="@{{name}}">
+                    <x-orchid-icon path="cursor-move" class="small me-2"></x-orchid-icon>
+                </span>
                 <span class="action icon-plus" data-action="click->fields--repeater#addBlockAfter">
                     <x-orchid-icon path="plus" class="small me-2"></x-orchid-icon>
                 </span>

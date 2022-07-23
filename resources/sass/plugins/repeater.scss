@@ -1,4 +1,15 @@
 .repeater {
+
+  .loading-icon {
+    font-size: 20px;
+    animation-name: spin;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    display: block;
+    width: 100%;
+  }
+
   .content {
     .no-value-message,
     .loading-message {
@@ -6,15 +17,6 @@
       border: #ccc dashed 2px;
       text-align: center;
       display: none;
-
-      > span {
-        font-size: 20px;
-        animation-name: spin;
-        animation-duration: 2000ms;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
-        display: block;
-      }
     }
 
     &.empty {
@@ -67,7 +69,10 @@
 
       > .card-body {
         padding: 0.75rem;
+      }
 
+      &.sortable-ghost {
+        opacity: .5;
       }
     }
   }
