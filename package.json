@@ -10,6 +10,9 @@
         "production": "mix --production",
         "eslint": "./node_modules/.bin/eslint resources/js/ --fix"
     },
+    "engines": {
+        "node": "^16"
+    },
     "dependencies": {
         "@babel/core": "^7.0.0",
         "@babel/eslint-parser": "^7.18.9",
