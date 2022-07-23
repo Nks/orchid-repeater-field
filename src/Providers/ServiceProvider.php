@@ -23,8 +23,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerResources()
             ->registerProviders()
-            ->registerTranslations()
-        ;
+            ->registerTranslations();
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
@@ -76,8 +75,7 @@ class ServiceProvider extends BaseServiceProvider
         View::composer('platform::app', function () {
             $this->dashboard
                 ->registerResource('scripts', mix('/js/repeater.js', 'vendor/nakukryskin/orchid-repeater-field'))
-                ->registerResource('stylesheets', mix('/css/repeater.css', 'vendor/nakukryskin/orchid-repeater-field'))
-            ;
+                ->registerResource('stylesheets', mix('/css/repeater.css', 'vendor/nakukryskin/orchid-repeater-field'));
         });
 
         return $this;

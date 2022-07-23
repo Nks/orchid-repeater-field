@@ -73,8 +73,7 @@ class Repeater extends Field
         return (new static)->name($name)
             ->set('original_name', $name)
             ->value([])
-            ->set('template', 'repeater_'.Str::random(32))
-        ;
+            ->set('template', 'repeater_'.Str::random(32));
     }
 
     public function view(string $view): self
