@@ -19,6 +19,7 @@ export default class extends ApplicationController {
         required: false,
         min: null,
         max: null,
+        collapse: false,
     };
 
     sortableInstance = null;
@@ -154,6 +155,14 @@ export default class extends ApplicationController {
         );
 
         return this;
+    }
+
+    collapse(event) {
+        const currentBlock = event.currentTarget.closest('.collapse-switch');
+
+        currentBlock.querySelector('.transition').classList.toggle("collapse-action");
+
+        currentBlock.parentElement.parentElement.parentElement.querySelector('.card-body').classList.toggle("collapse");
     }
 
     addNewBlock() {
