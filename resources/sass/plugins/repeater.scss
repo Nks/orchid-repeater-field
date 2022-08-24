@@ -81,6 +81,13 @@
   &-template {
     display: none;
   }
+  .transition {
+      transition: 0.4s;
+  }
+  .collapse-action{
+    transform: rotate3d(1, 0, 0, 180deg);
+  } 
+
 }
 
 @keyframes spin {
