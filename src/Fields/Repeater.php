@@ -105,4 +105,9 @@ class Repeater extends Field
     {
         return $this->set('buttonLabel', $label);
     }
+
+    public function collapse(bool $collapse): self
+    {
+        return $this->set('collapse', $collapse);
+    }
 }
