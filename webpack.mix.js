@@ -6,7 +6,7 @@ let webpackConfig = {
     alias: {
       '~orchid': path.resolve(`${__dirname}`, 'vendor/orchid/platform/resources'),
     },
-  }
+  },
 };
 
 if (mix.inProduction()) {
