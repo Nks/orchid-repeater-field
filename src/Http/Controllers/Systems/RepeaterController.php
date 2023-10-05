@@ -96,7 +96,7 @@ class RepeaterController extends Controller
             if (is_array($field)) {
                 $result[] = $this->prepareFields($field);
             } elseif ($field instanceof Group) {
-                $result[] = Group::make($this->prepareFields($field->getGroup()));
+                $result[] = $field->setGroup($this->prepareFields($field->getGroup()));
             } elseif ($field instanceof Field) {
                 $name = $field->get('name');
 
