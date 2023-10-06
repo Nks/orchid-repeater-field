@@ -27,7 +27,7 @@
         "axios": "^0.27.2",
         "laravel-mix": "^6.0.16",
         "open-color": "^1.7.0",
-        "postcss": "^8.2.15",
+        "postcss": "^8.4.31",
         "sortablejs": "^1.15.0",
         "squirrelly": "^8.0.8",
         "vue-template-compiler": "^2.6.12",
