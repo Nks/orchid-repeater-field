@@ -1,8 +1,7 @@
 import Sortable from 'sortablejs';
 import axios from 'axios';
 import * as Sqrl from 'squirrelly';
-import ApplicationController
-    from '~orchid/js/controllers/application_controller';
+import ApplicationController from '~orchid/js/controllers/application_controller';
 
 export default class extends ApplicationController {
     static targets = [
@@ -26,7 +25,7 @@ export default class extends ApplicationController {
 
     connect() {
         if (document.documentElement.hasAttribute('data-turbolinks-preview')
-      || document.body.classList.contains('gu-unselectable')) {
+            || document.body.classList.contains('gu-unselectable')) {
             return;
         }
 
@@ -110,7 +109,7 @@ export default class extends ApplicationController {
     }
 
     initMinRequiredBlock() {
-    //   Exit when required or min aren't set
+        //   Exit when required or min aren't set
         if (this.options.required !== true && !this.options.min) {
             return;
         }
@@ -120,7 +119,7 @@ export default class extends ApplicationController {
         ).length;
 
         if (!blocksCount && this.options.required === true && this.options.min
-      === null) {
+            === null) {
             this.options.min = 1;
         }
 
@@ -151,7 +150,7 @@ export default class extends ApplicationController {
         this.contentTarget.classList.toggle(
             'empty',
             this.blocksTarget.querySelectorAll(':scope > .repeater-item').length
-      === 0,
+            === 0,
         );
 
         return this;
@@ -251,29 +250,43 @@ export default class extends ApplicationController {
     }
 
     /**
-   * Sorting nested fields
-   */
+     * Sorting nested fields
+     */
     sort() {
         const self = this;
 
         const blocks = this.blocksTarget.querySelectorAll(
             ':scope > .repeater-item',
         );
-
         blocks.forEach((block, currentKey) => {
             block.dataset.sort = currentKey;
             const fields = block.querySelectorAll('[data-repeater-name-key]');
 
-            if (!fields.length) {
+            if (!fields.length && !inputs.length) {
                 return;
             }
 
             fields.forEach((field) => {
-                const { repeaterNameKey } = field.dataset;
+                const {repeaterNameKey} = field.dataset;
                 let originalName = `[${repeaterNameKey.replace('.', '')}]`;
 
                 if (repeaterNameKey.endsWith('.')) {
                     originalName += '[]';
+                }
+
+                // hack for multiple uploader
+                const inputs = field.querySelectorAll('input[type="hidden"]');
+                if (inputs.length) {
+                    inputs.forEach((input) => {
+                        if (field.getAttribute('multiple')) {
+                            originalName += '[]';
+                        }
+                        const resultInputName = `${input.closest(
+                            '.repeaters_container',
+                        ).dataset.containerKey}[${
+                            input.closest('.repeater-item').dataset.sort}]${originalName}`;
+                        input.setAttribute('name', resultInputName);
+                    });
                 }
 
                 const resultName = `${field.closest(

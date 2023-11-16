@@ -1,1 +1,86 @@
-.repeater .loading-icon{-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-name:spin;animation-name:spin;-webkit-animation-timing-function:linear;animation-timing-function:linear;display:block;font-size:20px;width:100%}.repeater .content .loading-message,.repeater .content .no-value-message{border:2px dashed #ccc;display:none;padding:20px;text-align:center}.repeater .content.empty .no-value-message{display:block}.repeater .content.loading .no-value-message{display:none}.repeater .content.loading .loading-message{display:block}.repeater .content.loading .card{display:none}.repeater .content .card{margin-top:.4rem}.repeater .content .card:first-child{margin-top:0}.repeater .content .card>.card-header{padding:.5rem 1rem}.repeater .content .card>.card-header .actions{margin:0}.repeater .content .card>.card-header .actions span.action{cursor:pointer}.repeater .content .card>.card-header .actions span.badge{opacity:.3}.repeater .content .card>.card-header .actions span.card-handle{cursor:move}.repeater .content .card>.card-body{padding:.75rem}.repeater .content .card.sortable-ghost{opacity:.5}.repeater-template{display:none}.repeater .transition{transition:.4s}.repeater .collapse-action{transform:rotateX(180deg)}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}
+.repeater .loading-icon {
+  font-size: 20px;
+  -webkit-animation-name: spin;
+          animation-name: spin;
+  -webkit-animation-duration: 2000ms;
+          animation-duration: 2000ms;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  display: block;
+  width: 100%;
+}
+.repeater .content .no-value-message,
+.repeater .content .loading-message {
+  padding: 20px;
+  border: #ccc dashed 2px;
+  text-align: center;
+  display: none;
+}
+.repeater .content.empty .no-value-message {
+  display: block;
+}
+.repeater .content.loading .no-value-message {
+  display: none;
+}
+.repeater .content.loading .loading-message {
+  display: block;
+}
+.repeater .content.loading .card {
+  display: none;
+}
+.repeater .content .card {
+  margin-top: 0.4rem;
+}
+.repeater .content .card:first-child {
+  margin-top: 0;
+}
+.repeater .content .card > .card-header {
+  padding: 0.5rem 1rem;
+}
+.repeater .content .card > .card-header .actions {
+  margin: 0;
+}
+.repeater .content .card > .card-header .actions span.action {
+  cursor: pointer;
+}
+.repeater .content .card > .card-header .actions span.badge {
+  opacity: 0.3;
+}
+.repeater .content .card > .card-header .actions span.card-handle {
+  cursor: move;
+}
+.repeater .content .card > .card-body {
+  padding: 0.75rem;
+}
+.repeater .content .card.sortable-ghost {
+  opacity: 0.5;
+}
+.repeater-template {
+  display: none;
+}
+.repeater .transition {
+  transition: 0.4s;
+}
+.repeater .collapse-action {
+  transform: rotate3d(1, 0, 0, 180deg);
+}
+
+@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

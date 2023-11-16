@@ -17,7 +17,7 @@ if (mix.inProduction()) {
     terser: {
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: false,
         },
       },
     },
